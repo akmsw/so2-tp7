@@ -13,5 +13,3 @@
 ## Screenshots
 
 ## Known issues
-
-test commit 2
