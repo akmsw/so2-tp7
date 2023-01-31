@@ -114,6 +114,11 @@ static void vTemperatureSensor(void) {
       currentTemperature--;
     }
 
+    // If the send fails, the program hangs
+    if (xQueueSend(xSensorQueue, &currentTemperature, portMAX_DELAY) != pdPASS) {
+      while (true);
+    }
+
     vTaskDelayUntil(&xLastExecutionTime, _SENSOR_DELAY_);
   }
 }
