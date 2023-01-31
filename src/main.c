@@ -78,12 +78,11 @@
 static void vTemperatureSensor(void);
 
 /* Global variables */
-static unsigned int current_temperature = 24;
+static unsigned int currentTemperature = 24;
 static uint32_t _dwRandNext = 1;
 
 /* Main program body */
-int main(void)
-{
+int main(void) {
 	xTaskCreate(vTemperatureSensor, "Temperature sensor simulator", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY + 1, NULL);
 	vTaskStartScheduler();
 
@@ -91,16 +90,18 @@ int main(void)
 }
 
 /* Tasks bodies */
-static void vTemperatureSensor(void)
-{
+static void vTemperatureSensor(void) {
 	TickType_t xLastExecutionTime = xTaskGetTickCount();
 
-	vTaskDelayUntil(&xLastExecutionTime, _SENSOR_DELAY_);
+  for (;;) {
+    currentTemperature += (getRandomNumber() % 2 ? 1 : -1);
+
+    vTaskDelayUntil(&xLastExecutionTime, _SENSOR_DELAY_);
+  }
 }
 
 /* Functions bodies */
-uint32_t rand(void)
-{
+uint32_t getRandomNumber(void) {
   _dwRandNext = _dwRandNext * 1103515245 + 12345 ;
 
   return (uint32_t)(_dwRandNext / 131072) % 65536 ;
