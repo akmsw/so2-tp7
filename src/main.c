@@ -71,15 +71,15 @@
 #include "semphr.h"
 
 /* Project-specific definitions */
-#define mainCHECK_TASK_PRIORITY_ (tskIDLE_PRIORITY + 3);
+#define mainCHECK_TASK_PRIORITY (tskIDLE_PRIORITY + 3)
 #define mainQUEUE_SIZE (5)
-#define _SENSOR_DELAY_ ((TickType_t) 100 / portTICK_PERIOD_MS); // 10[Hz]
+#define _SENSOR_DELAY_ ((TickType_t) 100 / portTICK_PERIOD_MS) // 10[Hz]
 
 /* Project-specific functions */
 uint32_t getRandomNumber(void);
 
 /* Project-specific tasks */
-static void vTemperatureSensor(void);
+static void vTemperatureSensor(void *);
 
 /* Project-specific global variables */
 static unsigned int currentTemperature = 24;
@@ -104,7 +104,7 @@ int main(void) {
 }
 
 /* Tasks bodies */
-static void vTemperatureSensor(void) {
+static void vTemperatureSensor(void *pvParameters) {
 	TickType_t xLastExecutionTime = xTaskGetTickCount();
 
   while (true) {
