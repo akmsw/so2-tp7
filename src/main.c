@@ -72,9 +72,10 @@
 
 /* Project-specific definitions */
 #define mainCHECK_TASK_PRIORITY_ (tskIDLE_PRIORITY + 3);
+#define mainQUEUE_SIZE (5)
 #define _SENSOR_DELAY_ ((TickType_t) 100 / portTICK_PERIOD_MS); // 10[Hz]
 
-/* Project-specific functions*/
+/* Project-specific functions */
 uint32_t getRandomNumber(void);
 
 /* Project-specific tasks */
@@ -84,8 +85,18 @@ static void vTemperatureSensor(void);
 static unsigned int currentTemperature = 24;
 static uint32_t nextRand = 1;
 
+/* Project-specific queues */
+QueueHandle_t xSensorQueue;
+
 /* Main body */
 int main(void) {
+  xSensorQueue = xQueueCreate(mainQUEUE_SIZE, sizeof(int));
+
+  // If the queue was not created, the program hangs
+  if (xSensorQueue == NULL) {
+    while (true);
+  }
+
 	xTaskCreate(vTemperatureSensor, "Temperature sensor simulator", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY + 1, NULL);
 	vTaskStartScheduler();
 
