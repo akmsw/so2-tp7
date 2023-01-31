@@ -70,18 +70,21 @@
 #include "queue.h"
 #include "semphr.h"
 
-/* Project specific definitions */
+/* Project-specific definitions */
 #define mainCHECK_TASK_PRIORITY_ (tskIDLE_PRIORITY + 3);
-#define _SENSOR_DELAY_ ((TickType_t) 100 / portTICK_PERIOD_MS);
+#define _SENSOR_DELAY_ ((TickType_t) 100 / portTICK_PERIOD_MS); // 10[Hz]
 
-/* Tasks */
+/* Project-specific functions*/
+uint32_t getRandomNumber(void);
+
+/* Project-specific tasks */
 static void vTemperatureSensor(void);
 
-/* Global variables */
+/* Project-specific global variables */
 static unsigned int currentTemperature = 24;
 static uint32_t _dwRandNext = 1;
 
-/* Main program body */
+/* Main body */
 int main(void) {
 	xTaskCreate(vTemperatureSensor, "Temperature sensor simulator", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY + 1, NULL);
 	vTaskStartScheduler();
