@@ -63,7 +63,7 @@ static void vTemperatureSensor(void *pvParameters) {
   while (true) {
     uint32_t randomNumber = getRandomNumber();
 
-    if (randomNumber % 2) {
+    if (randomNumber % 2 == 0) {
       currentTemperature++;
     } else {
       currentTemperature--;
