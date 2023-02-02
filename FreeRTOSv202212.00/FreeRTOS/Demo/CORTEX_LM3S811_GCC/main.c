@@ -86,7 +86,7 @@ static void vGenerateAverage(void *pvParameters) {
   int windowSize = 10;
 
   while (true) {
-    xQueueReceive(xSensorQueue, &valueToAdd, portMAX_DELAY)
+    xQueueReceive(xSensorQueue, &valueToAdd, portMAX_DELAY);
 
     vCircularArrayPush(temperatureArray, _MAX_N_, valueToAdd);
 
