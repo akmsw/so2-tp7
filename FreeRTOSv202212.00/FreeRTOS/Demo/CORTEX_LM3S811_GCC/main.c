@@ -67,7 +67,7 @@ static void vTemperatureSensor(void *pvParameters) {
       currentTemperature--;
     }
 
-    xQueueSend(xSensorQueue, &currentTemperature, portMAX_DELAY)
+    xQueueSend(xSensorQueue, &currentTemperature, portMAX_DELAY);
 
     uxHighWaterMark = uxTaskGetStackHighWaterMark(NULL);
 
