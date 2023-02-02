@@ -12,6 +12,8 @@
 #define mainQUEUE_SIZE (5)
 #define _SENSOR_DELAY_ ((TickType_t) 100 / portTICK_PERIOD_MS) // 10[Hz]
 #define _MAX_N_ 20
+#define _MAX_TEMP_ 30
+#define _MIN_TEMP_ 15
 
 /* Project-specific macros */
 #define ARRAY_SIZE(n) (sizeof(n) / sizeof(*n))
@@ -64,12 +66,16 @@ static void vTemperatureSensor(void *pvParameters) {
     uint32_t randomNumber = getRandomNumber();
 
     if (randomNumber % 2 == 0) {
-      currentTemperature++;
+      if (currentTemperature < _MAX_TEMP_) {
+        currentTemperature++;
+      }
     } else {
-      currentTemperature--;
+      if (currentTemperature > _MIN_TEMP_) {
+        currentTemperature--;
+      }
     }
 
-    xQueueSend(xSensorQueue, &currentTemperature, 0);
+    xQueueSend(xSensorQueue, &currentTemperature, portMAX_DELAY);
 
     uxHighWaterMark = uxTaskGetStackHighWaterMark(NULL);
 
@@ -88,13 +94,13 @@ static void vGenerateAverage(void *pvParameters) {
   int windowSize = 10;
 
   while (true) {
-    xQueueReceive(xSensorQueue, &valueToAdd, 0);
+    xQueueReceive(xSensorQueue, &valueToAdd, portMAX_DELAY);
 
     vCircularArrayPush(temperatureArray, _MAX_N_, valueToAdd);
 
     average = dCalculateAverage(temperatureArray, windowSize);
 
-    xQueueSend(xAverageQueue, &average, 0);
+    xQueueSend(xAverageQueue, &average, portMAX_DELAY);
   }
 }
 
