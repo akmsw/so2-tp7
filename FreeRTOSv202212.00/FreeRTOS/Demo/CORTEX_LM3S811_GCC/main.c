@@ -11,7 +11,7 @@
 #define mainCHECK_TASK_PRIORITY (tskIDLE_PRIORITY + 3)
 #define mainQUEUE_SIZE (5)
 #define _SENSOR_DELAY_ ((TickType_t) 100 / portTICK_PERIOD_MS) // 10[Hz]
-#define _MAX_N_ 20;
+#define _MAX_N_ 20
 
 /* Project-specific macros */
 #define ARRAY_SIZE(n) (sizeof(n) / sizeof(*n))
