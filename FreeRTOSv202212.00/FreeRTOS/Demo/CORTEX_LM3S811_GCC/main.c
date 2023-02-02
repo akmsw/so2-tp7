@@ -65,7 +65,7 @@ static void vTemperatureSensor(void *pvParameters) {
     }
 
     // If the send fails, the program hangs
-    if (xQueueSend(xSensorQueue, &currentTemperature, portMAX_DELAY) != pdPASS) {
+    if (xQueueSend(xSensorQueue, &currentTemperature, 0) != pdPASS) {
       while (true);
     }
 
@@ -81,7 +81,7 @@ static void vGenerateAverage(void *pvParameters) {
 
   while (true) {
     // If the receive fails, the program hangs
-    if (xQueueReceive(xSensorQueue, &valueToAdd, portMAX_DELAY) != pdPASS) {
+    if (xQueueReceive(xSensorQueue, &valueToAdd, 0) != pdPASS) {
       while (true);
     }
 
@@ -89,7 +89,7 @@ static void vGenerateAverage(void *pvParameters) {
 
     average = dCalculateAverage(temperatureArray, windowSize);
 
-    xQueueSend(xAverageQueue, &average, portMAX_DELAY);
+    xQueueSend(xAverageQueue, &average, 0);
   }
 }
 
