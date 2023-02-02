@@ -1,66 +1,3 @@
-/*
- * FreeRTOS V202212.00
- * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of
- * this software and associated documentation files (the "Software"), to deal in
- * the Software without restriction, including without limitation the rights to
- * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
- * the Software, and to permit persons to whom the Software is furnished to do so,
- * subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
- * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
- * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
- * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- *
- * https://www.FreeRTOS.org
- * https://github.com/FreeRTOS
- *
- */
-
-/*
- * This project contains an application demonstrating the use of the
- * FreeRTOS.org mini real time scheduler on the Luminary Micro LM3S811 Eval
- * board.  See http://www.FreeRTOS.org for more information.
- *
- * main() simply sets up the hardware, creates all the demo application tasks,
- * then starts the scheduler.  http://www.freertos.org/a00102.html provides
- * more information on the standard demo tasks.
- *
- * In addition to a subset of the standard demo application tasks, main.c also
- * defines the following tasks:
- *
- * + A 'Print' task.  The print task is the only task permitted to access the
- * LCD - thus ensuring mutual exclusion and consistent access to the resource.
- * Other tasks do not access the LCD directly, but instead send the text they
- * wish to display to the print task.  The print task spends most of its time
- * blocked - only waking when a message is queued for display.
- *
- * + A 'Button handler' task.  The eval board contains a user push button that
- * is configured to generate interrupts.  The interrupt handler uses a
- * semaphore to wake the button handler task - demonstrating how the priority
- * mechanism can be used to defer interrupt processing to the task level.  The
- * button handler task sends a message both to the LCD (via the print task) and
- * the UART where it can be viewed using a dumb terminal (via the UART to USB
- * converter on the eval board).  NOTES:  The dumb terminal must be closed in
- * order to reflash the microcontroller.  A very basic interrupt driven UART
- * driver is used that does not use the FIFO.  19200 baud is used.
- *
- * + A 'check' task.  The check task only executes every five seconds but has a
- * high priority so is guaranteed to get processor time.  Its function is to
- * check that all the other tasks are still operational and that no errors have
- * been detected at any time.  If no errors have every been detected 'PASS' is
- * written to the display (via the print task) - if an error has ever been
- * detected the message is changed to 'FAIL'.  The position of the message is
- * changed for each write.
- */
-
 /* Environment includes */
 #include "DriverLib.h"
 
@@ -74,11 +11,19 @@
 #define mainCHECK_TASK_PRIORITY (tskIDLE_PRIORITY + 3)
 #define mainQUEUE_SIZE (5)
 #define _SENSOR_DELAY_ ((TickType_t) 100 / portTICK_PERIOD_MS) // 10[Hz]
+#define _MAX_N_ 20;
+
+/* Project-specific macros */
+#define ARRAY_SIZE(n) (sizeof(n) / sizeof(*n))
 
 /* Project-specific functions */
+static void vCircularArrayPush(int[], int, int);
+static int dCalculateAverage(int[], int);
 uint32_t getRandomNumber(void);
 
+
 /* Project-specific tasks */
+static void vGenerateAverage(void *);
 static void vTemperatureSensor(void *);
 
 /* Project-specific global variables */
@@ -87,17 +32,20 @@ static uint32_t nextRand = 1;
 
 /* Project-specific queues */
 QueueHandle_t xSensorQueue;
+QueueHandle_t xAverageQueue;
 
 /* Main body */
 int main(void) {
   xSensorQueue = xQueueCreate(mainQUEUE_SIZE, sizeof(int));
+  xAverageQueue = xQueueCreate(mainQUEUE_SIZE, sizeof(int));
 
-  // If the queue was not created, the program hangs
-  if (xSensorQueue == NULL) {
+  // If any of the queues could not be created, the program hangs
+  if ((xSensorQueue == NULL) || (xAverageQueue == NULL)) {
     while (true);
   }
 
 	xTaskCreate(vTemperatureSensor, "Temperature sensor simulator", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY + 1, NULL);
+  xTaskCreate(vGenerateAverage, "Average temperature calculator", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL);
 	vTaskStartScheduler();
 
 	return 0;
@@ -123,9 +71,47 @@ static void vTemperatureSensor(void *pvParameters) {
   }
 }
 
+static void vGenerateAverage(void *pvParameters) {
+  int temperatureArray[_MAX_N_] = {};
+  int average;
+  int valueToAdd;
+  int windowSize = 10;
+
+  while (true) {
+    // If the receive fails, the program hangs
+    if (xQueueReceive(xSensorQueue, &valueToAdd, portMAX_DELAY) != pdPASS) {
+      while (true);
+    }
+
+    vCircularArrayPush(temperatureArray, _MAX_N_, valueToAdd);
+
+    average = dCalculateAverage(temperatureArray, windowSize);
+
+    xQueueSend(xAverageQueue, &average, portMAX_DELAY);
+  }
+}
+
 /* Functions bodies */
 uint32_t getRandomNumber(void) {
   nextRand = nextRand * 1103515245 + 12345 ;
 
   return (uint32_t) (nextRand / 131072) % 65536 ;
+}
+
+static void vCircularArrayPush(int array[], int arraySize, int valueToAdd) {
+  for (int i = 0; i < arraySize - 1; i++) {
+    array[i] = array[i + 1];
+  }
+
+  array[arraySize - 1] = valueToAdd;
+}
+
+static int dCalculateAverage(int array[], int windowSize) {
+  int average = 0;
+
+  for (int i = 0; i < windowSize; i++) {
+    average += array[i];
+  }
+
+  return average / windowSize;
 }
