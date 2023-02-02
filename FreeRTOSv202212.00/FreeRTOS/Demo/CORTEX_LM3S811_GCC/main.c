@@ -53,7 +53,9 @@ int main(void) {
 
 /* Tasks bodies */
 static void vTemperatureSensor(void *pvParameters) {
-	TickType_t xLastExecutionTime = xTaskGetTickCount();
+	TickType_t xLastExecutionTime;
+
+  xLastExecutionTime = xTaskGetTickCount();
 
   while (true) {
     if (getRandomNumber() % 2) {
