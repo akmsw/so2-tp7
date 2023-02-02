@@ -39,11 +39,6 @@ int main(void) {
   xSensorQueue = xQueueCreate(mainQUEUE_SIZE, sizeof(int));
   xAverageQueue = xQueueCreate(mainQUEUE_SIZE, sizeof(int));
 
-  // If any of the queues could not be created, the program hangs
-  if ((xSensorQueue == NULL) || (xAverageQueue == NULL)) {
-    while (true);
-  }
-
 	xTaskCreate(vTemperatureSensor, "Temperature sensor simulator", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY + 1, NULL);
   xTaskCreate(vGenerateAverage, "Average temperature calculator", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL);
 	vTaskStartScheduler();
@@ -57,6 +52,14 @@ static void vTemperatureSensor(void *pvParameters) {
 
   xLastExecutionTime = xTaskGetTickCount();
 
+  UBaseType_t uxHighWaterMark;
+
+  uxHighWaterMark = uxTaskGetStackHighWaterMark(NULL);
+
+  if(uxHighWaterMark < 1) {
+    while (true);
+  }
+
   while (true) {
     if (getRandomNumber() % 2) {
       currentTemperature++;
@@ -64,8 +67,11 @@ static void vTemperatureSensor(void *pvParameters) {
       currentTemperature--;
     }
 
-    // If the send fails, the program hangs
-    if (xQueueSend(xSensorQueue, &currentTemperature, 0) != pdPASS) {
+    xQueueSend(xSensorQueue, &currentTemperature, portMAX_DELAY)
+
+    uxHighWaterMark = uxTaskGetStackHighWaterMark(NULL);
+
+    if(uxHighWaterMark < 1) {
       while (true);
     }
 
@@ -80,16 +86,13 @@ static void vGenerateAverage(void *pvParameters) {
   int windowSize = 10;
 
   while (true) {
-    // If the receive fails, the program hangs
-    if (xQueueReceive(xSensorQueue, &valueToAdd, 0) != pdPASS) {
-      while (true);
-    }
+    xQueueReceive(xSensorQueue, &valueToAdd, portMAX_DELAY)
 
     vCircularArrayPush(temperatureArray, _MAX_N_, valueToAdd);
 
     average = dCalculateAverage(temperatureArray, windowSize);
 
-    xQueueSend(xAverageQueue, &average, 0);
+    xQueueSend(xAverageQueue, &average, portMAX_DELAY);
   }
 }
 
