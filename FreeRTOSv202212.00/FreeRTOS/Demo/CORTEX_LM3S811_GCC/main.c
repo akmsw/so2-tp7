@@ -26,6 +26,7 @@ static void vTemperatureSensor(void *);
 
 /* Project-specific global variables */
 static unsigned int currentTemperature = 24;
+static int averageTemperature;
 static uint32_t nextRand = 1;
 
 /* Project-specific queues */
@@ -85,7 +86,6 @@ static void vTemperatureSensor(void *pvParameters) {
 
 static void vGenerateAverage(void *pvParameters) {
   int temperatureArray[_MAX_N_] = {};
-  int average;
   int valueToAdd;
   int windowSize = 10;
 
@@ -94,9 +94,9 @@ static void vGenerateAverage(void *pvParameters) {
 
     vCircularArrayPush(temperatureArray, _MAX_N_, valueToAdd);
 
-    average = dCalculateAverage(temperatureArray, _MAX_N_, windowSize);
+    averageTemperature = dCalculateAverage(temperatureArray, _MAX_N_, windowSize);
 
-    xQueueSend(xAverageQueue, &average, portMAX_DELAY);
+    xQueueSend(xAverageQueue, &averageTemperature, portMAX_DELAY);
   }
 }
 
