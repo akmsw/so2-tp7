@@ -71,7 +71,7 @@ static void vTemperatureSensor(void *pvParameters) {
       }
     }
 
-    xQueueSend(xSensorQueue, &currentTemperature, 0);
+    xQueueSend(xSensorQueue, &currentTemperature, portMAX_DELAY);
 
     uxHighWaterMark = uxTaskGetStackHighWaterMark(NULL);
 
@@ -90,13 +90,13 @@ static void vGenerateAverage(void *pvParameters) {
   int windowSize = 10;
 
   while (true) {
-    xQueueReceive(xSensorQueue, &valueToAdd, 0);
+    xQueueReceive(xSensorQueue, &valueToAdd, portMAX_DELAY);
 
     vCircularArrayPush(temperatureArray, _MAX_N_, valueToAdd);
 
     average = dCalculateAverage(temperatureArray, _MAX_N_, windowSize);
 
-    xQueueSend(xAverageQueue, &average, 0);
+    xQueueSend(xAverageQueue, &average, portMAX_DELAY);
   }
 }
 
