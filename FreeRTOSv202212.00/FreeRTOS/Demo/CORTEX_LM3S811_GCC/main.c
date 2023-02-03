@@ -15,14 +15,10 @@
 #define _MAX_TEMP_ 30
 #define _MIN_TEMP_ 15
 
-/* Project-specific macros */
-#define ARRAY_SIZE(n) (sizeof(n) / sizeof(*n))
-
 /* Project-specific functions */
 static void vCircularArrayPush(int[], int, int);
-static int dCalculateAverage(int[], int);
+static int dCalculateAverage(int[], int, int);
 uint32_t getRandomNumber(void);
-
 
 /* Project-specific tasks */
 static void vGenerateAverage(void *);
