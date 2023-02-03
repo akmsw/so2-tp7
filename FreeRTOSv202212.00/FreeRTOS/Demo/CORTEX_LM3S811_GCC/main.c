@@ -98,7 +98,7 @@ static void vGenerateAverage(void *pvParameters) {
 
     vCircularArrayPush(temperatureArray, _MAX_N_, valueToAdd);
 
-    average = dCalculateAverage(temperatureArray, windowSize);
+    average = dCalculateAverage(temperatureArray, _MAX_N_, windowSize);
 
     xQueueSend(xAverageQueue, &average, 0);
   }
@@ -119,11 +119,11 @@ static void vCircularArrayPush(int array[], int arraySize, int valueToAdd) {
   array[arraySize - 1] = valueToAdd;
 }
 
-static int dCalculateAverage(int array[], int windowSize) {
+static int dCalculateAverage(int array[], int arraySize, int windowSize) {
   int average = 0;
 
   for (int i = 0; i < windowSize; i++) {
-    average += array[i];
+    average += array[(arraySize - 1) - i];
   }
 
   return average / windowSize;
