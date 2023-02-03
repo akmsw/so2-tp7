@@ -122,5 +122,7 @@ static int dCalculateAverage(int array[], int arraySize, int windowSize) {
     average += array[(arraySize - 1) - i];
   }
 
-  return average / windowSize;
+  average /= windowSize;
+
+  return average;
 }
