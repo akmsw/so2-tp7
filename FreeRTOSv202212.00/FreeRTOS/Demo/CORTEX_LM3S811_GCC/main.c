@@ -21,7 +21,11 @@ static unsigned int temperaturaActual = 24;
 static unsigned int semilla = 1;
 
 int main(void) {
-  xColaSensor = xQueueCreate(mainQUEUE_SIZE, sizeof(int));
+  xColaSensor = xQueueCreate(mainQUEUE_SIZE, sizeof(unsigned int));
+
+  if (xColaSensor == NULL) {
+    for (;;);
+  }
 
 	xTaskCreate(vSensorTemperatura, "Sensor", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL);
 	vTaskStartScheduler();
