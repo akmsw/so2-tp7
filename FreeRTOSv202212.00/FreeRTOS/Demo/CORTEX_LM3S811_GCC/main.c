@@ -30,14 +30,14 @@ int main(void) {
 }
 
 static void vSensorTemperatura(void *pvParameters) {
-  TickType_t xLastExecutionTime = xTaskGetTickCount();
+  TickType_t xTiempoAnteriorTarea = xTaskGetTickCount();
 
   if (uxTaskGetStackHighWaterMark(NULL) < 1) {
     for (;;);
   }
 
 	for (;;)	{
-		vTaskDelayUntil(&xLastExecutionTime, mainCHECK_DELAY);
+		vTaskDelayUntil(&xTiempoAnteriorTarea, mainCHECK_DELAY);
 
     getRandomNumber() % 2 == 0 ? temperaturaActual++ : temperaturaActual--;
 
@@ -50,7 +50,7 @@ static void vSensorTemperatura(void *pvParameters) {
 }
 
 unsigned int getRandomNumber(void) {
-  semilla = semilla * 1103515245 + 12345 ;
+  semilla = semilla * 1103515245 + 12345;
 
-  return (uint32_t) (semilla / 131072) % 65536 ;
+  return (semilla / 131072) % 65536;
 }
