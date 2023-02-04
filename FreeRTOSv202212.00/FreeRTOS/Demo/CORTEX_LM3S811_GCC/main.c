@@ -45,7 +45,9 @@ static void vSensorTemperatura(void *pvParameters) {
 
     getRandomNumber() % 2 == 0 ? temperaturaActual++ : temperaturaActual--;
 
-    xQueueSend(xColaSensor, &temperaturaActual, portMAX_DELAY);
+    if (xQueueSend(xColaSensor, &temperaturaActual, portMAX_DELAY) != pdTRUE) {
+      for (;;);
+    }
 
     if (uxTaskGetStackHighWaterMark(NULL) < 1) {
       for (;;);
