@@ -10,7 +10,8 @@
 
 /* Tareas */
 static void vSensor(void *);
-static void vPromedio(void *);
+static void vCalcularPromedio(void *);
+static void vGuardarPromedio(void *);
 
 /* Funciones */
 void actualizarArregloCircular(int[], int, int);
@@ -35,7 +36,8 @@ int main(void) {
   }
 
 	xTaskCreate(vSensor, "Sensor", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL);
-  xTaskCreate(vPromedio, "Promedio", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL);
+  xTaskCreate(vCalcularPromedio, "Calcular promedio", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL);
+  xTaskCreate(vGuardarPromedio, "Guardar promedio", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL);
 	vTaskStartScheduler();
 
 	return 0;
@@ -63,11 +65,11 @@ static void vSensor(void *pvParameters) {
 	}
 }
 
-static void vPromedio(void *pvParameters) {
+static void vCalcularPromedio(void *pvParameters) {
   int valorCensado;
   int tamVentana = 10;
 
-  int arregloTemperatura[_MAX_N_];
+  int arregloTemperatura[_MAX_N_] = {};
 
   if (uxTaskGetStackHighWaterMark(NULL) < 1) {
     for (;;);
@@ -85,6 +87,28 @@ static void vPromedio(void *pvParameters) {
     if (xQueueSend(xColaPromedio, &temperaturaPromedio, portMAX_DELAY) != pdTRUE) {
       for (;;);
     }
+
+    if (uxTaskGetStackHighWaterMark(NULL) < 1) {
+      for (;;);
+    }
+  }
+}
+
+static void vGuardarPromedio(void *pvParameters) {
+  int arregloPromedio[_MAX_N_] = {};
+
+  int nuevoValor;
+
+  if (uxTaskGetStackHighWaterMark(NULL) < 1) {
+    for (;;);
+  }
+
+  for (;;) {
+    if (xQueueReceive(xColaPromedio, &nuevoValor, portMAX_DELAY) != pdTRUE) {
+      for (;;);
+    }
+
+    actualizarArregloCircular(arregloPromedio, _MAX_N_, nuevoValor);
 
     if (uxTaskGetStackHighWaterMark(NULL) < 1) {
       for (;;);
