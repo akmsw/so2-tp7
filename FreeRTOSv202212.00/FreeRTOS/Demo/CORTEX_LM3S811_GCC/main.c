@@ -3,22 +3,22 @@
 #include "task.h"
 #include "queue.h"
 
-#define mainCHECK_DELAY						( ( TickType_t ) 100 / portTICK_PERIOD_MS ) // 10hz
-#define mainBAUD_RATE				      ( 19200 )
-#define mainFIFO_SET				      ( 0x10 )
-#define mainCHECK_TASK_PRIORITY		( tskIDLE_PRIORITY + 3 )
-#define mainQUEUE_SIZE				    ( 3 )
+#define mainCHECK_DELAY						((TickType_t) 100 / portTICK_PERIOD_MS) // 10hz
+#define mainCHECK_TASK_PRIORITY		(tskIDLE_PRIORITY + 3)
+#define mainQUEUE_SIZE				    (3)
 
 /* Tareas */
-static void vSensorTemperatura( void *pvParameters );
+static void vSensorTemperatura(void *);
+
+/* Funciones */
+unsigned int getRandomNumber(void);
 
 /* Variables globales */
-static int temperaturaActual;
+static unsigned int temperaturaActual =24;
+static unsigned int seed = 1;
 
 int main(void) {
-  temperaturaActual = 0;
-
-	xTaskCreate( vSensorTemperatura, "Sensor", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL );
+	xTaskCreate(vSensorTemperatura, "Sensor", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL);
 	vTaskStartScheduler();
 
 	return 0;
@@ -27,9 +27,19 @@ int main(void) {
 static void vSensorTemperatura(void *pvParameters) {
   TickType_t xLastExecutionTime = xTaskGetTickCount();
 
-	while (true)	{
-		vTaskDelayUntil( &xLastExecutionTime, mainCHECK_DELAY );
+  if (uxTaskGetStackHighWaterMark(NULL) < 1) {
+    while (true);
+  }
 
-    temperaturaActual++;
+	while (true)	{
+		vTaskDelayUntil(&xLastExecutionTime, mainCHECK_DELAY);
+
+    getRandomNumber() % 2 == 0 ? temperaturaActual++ : temperaturaActual--;
 	}
+}
+
+unsigned int getRandomNumber(void) {
+  seed = seed * 1103515245 + 12345 ;
+
+  return (uint32_t) (seed / 131072) % 65536 ;
 }
