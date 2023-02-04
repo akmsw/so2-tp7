@@ -36,8 +36,8 @@ static void FaultISR(void);
 static void IntDefaultHandler(void);
 extern void xPortPendSVHandler(void);
 extern void xPortSysTickHandler(void);
-extern void vUART_ISR( void );
-extern void vGPIO_ISR( void );
+// extern void vUART_ISR( void );
+// extern void vGPIO_ISR( void );
 extern void vPortSVCHandler( void );
 
 //*****************************************************************************
