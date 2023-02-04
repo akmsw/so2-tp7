@@ -33,10 +33,10 @@ static void vSensorTemperatura(void *pvParameters) {
   TickType_t xLastExecutionTime = xTaskGetTickCount();
 
   if (uxTaskGetStackHighWaterMark(NULL) < 1) {
-    while (true);
+    for (;;);
   }
 
-	while (true)	{
+	for (;;)	{
 		vTaskDelayUntil(&xLastExecutionTime, mainCHECK_DELAY);
 
     getRandomNumber() % 2 == 0 ? temperaturaActual++ : temperaturaActual--;
@@ -44,7 +44,7 @@ static void vSensorTemperatura(void *pvParameters) {
     xQueueSend(xColaSensor, &temperaturaActual, portMAX_DELAY);
 
     if (uxTaskGetStackHighWaterMark(NULL) < 1) {
-      while (true);
+      for (;;);
     }
 	}
 }
