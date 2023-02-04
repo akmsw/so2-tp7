@@ -5,23 +5,23 @@
 
 #define mainCHECK_DELAY						((TickType_t) 100 / portTICK_PERIOD_MS) // 10hz
 #define mainCHECK_TASK_PRIORITY		(tskIDLE_PRIORITY + 3)
-#define mainQUEUE_SIZE				    (3)
+#define mainQUEUE_SIZE				    (4)
 
 /* Tareas */
 static void vSensorTemperatura(void *);
 
 /* Funciones */
-unsigned int getRandomNumber(void);
+uint32_t getRandomNumber(void);
 
 /* Colas */
 QueueHandle_t xColaSensor;
 
 /* Variables globales */
-static unsigned int temperaturaActual = 24;
-static unsigned int semilla = 1;
+static uint32_t temperaturaActual = 24;
+static uint32_t semilla = 1;
 
 int main(void) {
-  xColaSensor = xQueueCreate(mainQUEUE_SIZE, sizeof(unsigned int));
+  xColaSensor = xQueueCreate(mainQUEUE_SIZE, sizeof(uint32_t));
 
   if (xColaSensor == NULL) {
     for (;;);
@@ -55,7 +55,7 @@ static void vSensorTemperatura(void *pvParameters) {
 	}
 }
 
-unsigned int getRandomNumber(void) {
+uint32_t getRandomNumber(void) {
   semilla = semilla * 1103515245 + 12345;
 
   return (semilla / 131072) % 65536;
