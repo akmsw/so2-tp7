@@ -17,8 +17,8 @@ unsigned int getRandomNumber(void);
 QueueHandle_t xColaSensor;
 
 /* Variables globales */
-static unsigned int temperaturaActual =24;
-static unsigned int seed = 1;
+static unsigned int temperaturaActual = 24;
+static unsigned int semilla = 1;
 
 int main(void) {
   xColaSensor = xQueueCreate(mainQUEUE_SIZE, sizeof(int));
@@ -50,7 +50,7 @@ static void vSensorTemperatura(void *pvParameters) {
 }
 
 unsigned int getRandomNumber(void) {
-  seed = seed * 1103515245 + 12345 ;
+  semilla = semilla * 1103515245 + 12345 ;
 
-  return (uint32_t) (seed / 131072) % 65536 ;
+  return (uint32_t) (semilla / 131072) % 65536 ;
 }
