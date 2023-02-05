@@ -1,33 +1,43 @@
 #include "DriverLib.h"
 #include "FreeRTOS.h"
+#include "hw_include/hw_memmap.h"
+#include "hw_include/hw_timer.h"
+#include "hw_include/timer.h"
 #include "task.h"
 #include "queue.h"
 
-#define mainCHECK_DELAY						((TickType_t) 100 / portTICK_PERIOD_MS) // 10hz
-#define mainCHECK_TASK_PRIORITY		(tskIDLE_PRIORITY + 3)
-#define mainQUEUE_SIZE				    (4)
-#define mainBAUD_RATE		          (19200)
-#define _MAX_N_                   (20)
-#define _MAX_TAM_VENTANA          (10)
-#define _MAX_TEMP_                (30)
-#define _MIN_TEMP_                (15)
-#define _COLS_DISPLAY_            (87)
+#define mainCHECK_DELAY				  ((TickType_t) 100 / portTICK_PERIOD_MS) // 10hz
+#define mainCHECK_TASK_PRIORITY (tskIDLE_PRIORITY + 3)
+#define mainQUEUE_SIZE				   4
+#define mainBAUD_RATE		         19200
+#define _MAX_N_                  20
+#define _MAX_TAM_VENTANA         10
+#define _MAX_TEMP_               30
+#define _MIN_TEMP_               15
+#define _COLS_DISPLAY_           87
+#define _STATS_DELAY_           ((TickType_t) 1000 / portTICK_PERIOD_MS)
 
 /* Tareas */
 static void vSensor(void *);
 static void vCalcularPromedio(void *);
 static void vDibujar(void *);
+static void vEstadisticas(void *);
 
 /* Funciones */
 void iniciarDisplay(void);
 void iniciarUART(void);
 void dibujarEjes(void);
+void configurarTimer(void);
+void Timer0IntHandler(void);
+void imprimirEstadisticas(void);
+void enviarCadenaUART0(const char *);
 void actualizarArregloCircular(int[], int, int);
 int numeroAleatorio(void);
 int actualizarTamVentana(int);
 int calcularPromedio(int[], int, int);
 int atoi(char *);
-char* obtenerEquivalenteCaracter(int);
+char* obtenerCaracterEquivalente(int);
+unsigned long obtenerValor(void);
 
 /* Colas */
 QueueHandle_t xColaSensor;
@@ -36,6 +46,10 @@ QueueHandle_t xColaPromedio;
 /* Variables globales */
 static int semilla = 1;
 static int temperaturaActual = 24;
+
+unsigned long ulHighFrequencyTimerTicks;
+
+TaskStatus_t *pxTaskStatusArray;
 
 int main(void) {
   xColaSensor = xQueueCreate(mainQUEUE_SIZE, sizeof(int));
@@ -50,6 +64,7 @@ int main(void) {
 	xTaskCreate(vSensor, "Sensor", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY + 1, NULL);
   xTaskCreate(vCalcularPromedio, "Calcular promedio", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL);
   xTaskCreate(vDibujar, "Dibujar", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY - 1, NULL);
+  xTaskCreate(vEstadisticas, "Estadísticas", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY - 1, NULL);
 	vTaskStartScheduler();
 
 	return 0;
@@ -140,12 +155,30 @@ static void vDibujar(void *pvParameters) {
     dibujarEjes();
 
     for (int i = 0; i < _COLS_DISPLAY_; i++) {
-      OSRAMImageDraw(obtenerEquivalenteCaracter(arregloPromedio[i]), (i + 11), (arregloPromedio[i] > 21 ? 0 : 1), 1, 1);
+      OSRAMImageDraw(obtenerCaracterEquivalente(arregloPromedio[i]), (i + 11), (arregloPromedio[i] > 21 ? 0 : 1), 1, 1);
     }
 
     if (uxTaskGetStackHighWaterMark(NULL) < 1) {
       while (true);
     }
+  }
+}
+
+static void vEstadisticas(void *pvParameters) {
+  UBaseType_t uxArraySize = uxTaskGetNumberOfTasks();
+
+  pxTaskStatusArray = pvPortMalloc(uxArraySize * sizeof(TaskStatus_t));
+
+  if (uxTaskGetStackHighWaterMark(NULL) < 1) {
+    while (true);
+  }
+
+  while (true) {
+    if (uxTaskGetStackHighWaterMark(NULL) < 1) {
+      while (true);
+    }
+
+    vTaskDelay(_STATS_DELAY_);
   }
 }
 
@@ -175,6 +208,78 @@ void dibujarEjes(void) {
   for (int i = 11; i < _COLS_DISPLAY_ + 11; i++) {
     OSRAMImageDraw("@", i, 1, 1, 1);
   }
+}
+
+void configurarTimer0(void) {
+  SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER0);
+  IntMasterEnable();
+  TimerIntEnable(TIMER0_BASE, TIMER_TIMA_TIMEOUT);
+  TimerConfigure(TIMER0_BASE, TIMER_CFG_32_BIT_TIMER);
+  TimerLoadSet(TIMER0_BASE, TIMER_A, 1500);
+  TimerIntRegister(TIMER0_BASE, TIMER_A, Timer0IntHandler);
+  TimerEnable(TIMER0_BASE, TIMER_A);
+}
+
+void Timer0IntHandler(void) {
+  TimerIntClear(TIMER0_BASE, TIMER_TIMA_TIMEOUT);
+
+  ulHighFrequencyTimerTicks++;
+}
+
+void imprimirEstadisticas(void) {
+  volatile UBaseType_t uxArraySize;
+  volatile UBaseType_t x;
+
+  unsigned long ulTotalRunTime;
+  unsigned long ulStatsAsPercentage;
+
+  if (pxTaskStatusArray != NULL) {
+    uxArraySize = uxTaskGetSystemState(pxTaskStatusArray, uxArraySize, &ulTotalRunTime);
+
+    ulTotalRunTime /= 100UL;
+
+    enviarCadenaUART0("\r");
+
+    if (ulTotalRunTime > 0) {
+      enviarCadenaUART0("TAREA\t|TICKS\t|CPU%\t|STACK FREE\r\n");
+
+      for (x = 0; x < uxArraySize; x++) {
+        ulStatsAsPercentage = pxTaskStatusArray[x].ulRunTimeCounter / ulTotalRunTime;
+
+        char counter[8],porcentaje[8],stack[8];
+
+        enviarCadenaUART0(pxTaskStatusArray[x].pcTaskName);
+        enviarCadenaUART0("\t|");
+        utoa(pxTaskStatusArray[x].ulRunTimeCounter,counter,10);
+        enviarCadenaUART0(counter);
+        enviarCadenaUART0("\t|");
+
+        if (ulStatsAsPercentage > 0UL) {
+          utoa(ulStatsAsPercentage,porcentaje,10);
+          enviarCadenaUART0(porcentaje);
+        } else {
+          enviarCadenaUART0("0");
+        }
+
+        enviarCadenaUART0("%\t|");
+        utoa(pxTaskStatusArray[x].usStackHighWaterMark,stack,10);
+        enviarCadenaUART0(stack);
+        enviarCadenaUART0(" Words\r\n");
+      }
+
+      enviarCadenaUART0("\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n");
+    }
+  }
+}
+
+void enviarCadenaUART0(const char *cadena) {
+  while(*cadena != '\0') {
+    UARTCharPut(UART0_BASE, *cadena++);
+  }
+
+  UARTCharPut(UART0_BASE, '\0');
+
+  return;
 }
 
 void actualizarArregloCircular(int arreglo[], int tamArreglo, int nuevoValor) {
@@ -248,7 +353,7 @@ int atoi(char *cadena) {
   return numero;
 }
 
-char* obtenerEquivalenteCaracter(int valor) {
+char* obtenerCaracterEquivalente(int valor) {
   if ((valor <= 15) || (valor == 22)) {
     return "@";
   }
@@ -300,4 +405,8 @@ char* obtenerEquivalenteCaracter(int valor) {
   if (valor >= 29) {
     return "";
   }
+}
+
+unsigned long obtenerValor(void) {
+  return ulHighFrequencyTimerTicks;
 }
