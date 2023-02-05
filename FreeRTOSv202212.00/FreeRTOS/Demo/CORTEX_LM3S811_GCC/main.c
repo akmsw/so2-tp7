@@ -10,6 +10,7 @@
 #define mainQUEUE_SIZE				    (4)
 #define mainBAUD_RATE		          (19200)
 #define _MAX_N_                   (20)
+#define _MAX_TAM_VENTANA          (10)
 
 /* Tareas */
 static void vSensor(void *);
@@ -18,7 +19,7 @@ static void vGuardarPromedio(void *);
 
 /* Funciones */
 void actualizarArregloCircular(int[], int, int);
-void inicialHardware(void);
+void iniciarUART(void);
 int numeroAleatorio(void);
 int actualizarTamVentana(int);
 int calcularPromedio(int[], int, int);
@@ -140,6 +141,7 @@ void iniciarUART(void) {
 int actualizarTamVentana(int tamVentana) {
   if (UARTCharsAvail(UART0_BASE)) {
     int i = 0;
+    int tmp;
 
     char lectura;
 
@@ -157,7 +159,11 @@ int actualizarTamVentana(int tamVentana) {
 
     nuevoTamVentana[i] = '\0';
 
-    tamVentana = atoi(nuevoTamVentana);
+    tmp = strtol(nuevoTamVentana, NULL, 10);
+
+    if (tmp > 1 && tmp < _MAX_TAM_VENTANA) {
+      tamVentana = tmp;
+    }
   }
 
   return tamVentana;
