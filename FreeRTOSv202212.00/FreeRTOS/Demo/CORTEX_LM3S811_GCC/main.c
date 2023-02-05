@@ -5,6 +5,7 @@
 #include "hw_include/timer.h"
 #include "task.h"
 #include "queue.h"
+#include <stdlib.h>
 
 #define mainCHECK_DELAY				  ((TickType_t) 100 / portTICK_PERIOD_MS) // 10hz
 #define mainCHECK_TASK_PRIORITY (tskIDLE_PRIORITY + 3)
@@ -35,7 +36,7 @@ void actualizarArregloCircular(int[], int, int);
 int numeroAleatorio(void);
 int actualizarTamVentana(int);
 int calcularPromedio(int[], int, int);
-int atoi(char *);
+int convertirCadenaAEntero(char *);
 char* obtenerCaracterEquivalente(int);
 unsigned long obtenerValor(void);
 
@@ -62,9 +63,9 @@ int main(void) {
   iniciarUART();
   iniciarDisplay();
 	xTaskCreate(vSensor, "Sensor", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY + 1, NULL);
-  xTaskCreate(vCalcularPromedio, "Calcular promedio", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL);
+  xTaskCreate(vCalcularPromedio, "Prom.", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL);
   xTaskCreate(vDibujar, "Dibujar", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY - 1, NULL);
-  xTaskCreate(vEstadisticas, "Estadísticas", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY - 1, NULL);
+  xTaskCreate(vEstadisticas, "Stats", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY - 1, NULL);
 	vTaskStartScheduler();
 
 	return 0;
@@ -178,6 +179,8 @@ static void vEstadisticas(void *pvParameters) {
       while (true);
     }
 
+    imprimirEstadisticas();
+
     vTaskDelay(_STATS_DELAY_);
   }
 }
@@ -250,19 +253,19 @@ void imprimirEstadisticas(void) {
 
         enviarCadenaUART0(pxTaskStatusArray[x].pcTaskName);
         enviarCadenaUART0("\t|");
-        utoa(pxTaskStatusArray[x].ulRunTimeCounter,counter,10);
+        utoa(pxTaskStatusArray[x].ulRunTimeCounter,counter, 10);
         enviarCadenaUART0(counter);
         enviarCadenaUART0("\t|");
 
         if (ulStatsAsPercentage > 0UL) {
-          utoa(ulStatsAsPercentage,porcentaje,10);
+          utoa(ulStatsAsPercentage,porcentaje, 10);
           enviarCadenaUART0(porcentaje);
         } else {
           enviarCadenaUART0("0");
         }
 
         enviarCadenaUART0("%\t|");
-        utoa(pxTaskStatusArray[x].usStackHighWaterMark,stack,10);
+        utoa(pxTaskStatusArray[x].usStackHighWaterMark,stack, 10);
         enviarCadenaUART0(stack);
         enviarCadenaUART0(" Words\r\n");
       }
@@ -311,7 +314,7 @@ int actualizarTamVentana(int tamVentana) {
 
     nuevoTamVentana[i] = '\0';
 
-    tmp = atoi(nuevoTamVentana);
+    tmp = convertirCadenaAEntero(nuevoTamVentana);
 
     if (tmp > 1 && tmp < _MAX_TAM_VENTANA) {
       tamVentana = tmp;
@@ -341,7 +344,7 @@ int calcularPromedio(int arreglo[], int tamArreglo, int tamVentana) {
   return acumulador / tamVentana;
 }
 
-int atoi(char *cadena) {
+int convertirCadenaAEntero(char *cadena) {
   int numero = 0;
 
   char *c = cadena;
