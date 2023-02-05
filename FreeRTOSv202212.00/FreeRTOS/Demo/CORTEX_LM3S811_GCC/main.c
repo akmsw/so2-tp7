@@ -168,18 +168,6 @@ int actualizarTamVentana(int tamVentana) {
   return tamVentana;
 }
 
-int atoi(char *cadena) {
-  int numero = 0;
-
-  char *c = cadena;
-
-  while ((*c >= '0') && (*c <= '9')) {
-    numero = numero * 10 + (*c++ - '0');
-  }
-
-  return numero;
-}
-
 int numeroAleatorio(void) {
   semilla = semilla * 1103515245 + 12345;
 
@@ -198,4 +186,16 @@ int calcularPromedio(int arreglo[], int tamArreglo, int tamVentana) {
   }
 
   return acumulador / tamVentana;
+}
+
+int atoi(char *cadena) {
+  int numero = 0;
+
+  char *c = cadena;
+
+  while ((*c >= '0') && (*c <= '9')) {
+    numero = numero * 10 + (*c++ - '0');
+  }
+
+  return numero;
 }
