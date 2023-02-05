@@ -22,7 +22,7 @@
 static void vSensor(void *);
 static void vCalcularPromedio(void *);
 static void vDibujar(void *);
-static void vEstadisticas(void *);
+static void vStats(void *);
 
 /* Funciones */
 void iniciarDisplay(void);
@@ -65,7 +65,7 @@ int main(void) {
 	xTaskCreate(vSensor, "Sensor", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY + 1, NULL);
   xTaskCreate(vCalcularPromedio, "Prom.", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL);
   xTaskCreate(vDibujar, "Dibujar", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY - 1, NULL);
-  xTaskCreate(vEstadisticas, "Stats", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY - 1, NULL);
+  xTaskCreate(vStats, "Stats", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY - 1, NULL);
 	vTaskStartScheduler();
 
 	return 0;
@@ -165,7 +165,7 @@ static void vDibujar(void *pvParameters) {
   }
 }
 
-static void vEstadisticas(void *pvParameters) {
+static void vStats(void *pvParameters) {
   UBaseType_t uxArraySize = uxTaskGetNumberOfTasks();
 
   pxTaskStatusArray = pvPortMalloc(uxArraySize * sizeof(TaskStatus_t));
@@ -175,11 +175,11 @@ static void vEstadisticas(void *pvParameters) {
   }
 
   while (true) {
+    imprimirEstadisticas();
+
     if (uxTaskGetStackHighWaterMark(NULL) < 1) {
       while (true);
     }
-
-    imprimirEstadisticas();
 
     vTaskDelay(_STATS_DELAY_);
   }
@@ -249,7 +249,9 @@ void imprimirEstadisticas(void) {
       for (x = 0; x < uxArraySize; x++) {
         ulStatsAsPercentage = pxTaskStatusArray[x].ulRunTimeCounter / ulTotalRunTime;
 
-        char counter[8],porcentaje[8],stack[8];
+        char counter[8];
+        char porcentaje[8];
+        char stack[8];
 
         enviarCadenaUART0(pxTaskStatusArray[x].pcTaskName);
         enviarCadenaUART0("\t|");

@@ -554,58 +554,58 @@ LOAD linker stubs
  .debug_aranges
                 0x0000000000000208       0x20 /usr/lib/gcc/arm-none-eabi/9.2.1/thumb/nofp/libgcc.a(_dvmd_tls.o)
 
-.debug_line     0x0000000000000000     0x574c
+.debug_line     0x0000000000000000     0x5756
  .debug_line    0x0000000000000000       0xe4 gcc/startup.o
- .debug_line    0x00000000000000e4      0xbe7 gcc/main.o
- .debug_line    0x0000000000000ccb      0x2e0 gcc/list.o
- .debug_line    0x0000000000000fab     0x109d gcc/queue.o
- .debug_line    0x0000000000002048     0x19df gcc/tasks.o
- .debug_line    0x0000000000003a27      0x330 gcc/port.o
- .debug_line    0x0000000000003d57      0x1f6 gcc/heap_1.o
- .debug_line    0x0000000000003f4d      0x38a gcc/BlockQ.o
- .debug_line    0x00000000000042d7      0x2ce gcc/PollQ.o
- .debug_line    0x00000000000045a5      0x20e gcc/integer.o
- .debug_line    0x00000000000047b3      0x3b0 gcc/semtest.o
- .debug_line    0x0000000000004b63      0x424 gcc/osram96x16.o
- .debug_line    0x0000000000004f87      0x247 /usr/lib/gcc/arm-none-eabi/9.2.1/../../../arm-none-eabi/lib/thumb/nofp/libc.a(lib_a-memcpy-stub.o)
- .debug_line    0x00000000000051ce      0x27b /usr/lib/gcc/arm-none-eabi/9.2.1/../../../arm-none-eabi/lib/thumb/nofp/libc.a(lib_a-memset.o)
- .debug_line    0x0000000000005449      0x22c /usr/lib/gcc/arm-none-eabi/9.2.1/../../../arm-none-eabi/lib/thumb/nofp/libc.a(lib_a-utoa.o)
- .debug_line    0x0000000000005675       0x7a /usr/lib/gcc/arm-none-eabi/9.2.1/thumb/nofp/libgcc.a(_udivsi3.o)
- .debug_line    0x00000000000056ef       0x5d /usr/lib/gcc/arm-none-eabi/9.2.1/thumb/nofp/libgcc.a(_dvmd_tls.o)
+ .debug_line    0x00000000000000e4      0xbf1 gcc/main.o
+ .debug_line    0x0000000000000cd5      0x2e0 gcc/list.o
+ .debug_line    0x0000000000000fb5     0x109d gcc/queue.o
+ .debug_line    0x0000000000002052     0x19df gcc/tasks.o
+ .debug_line    0x0000000000003a31      0x330 gcc/port.o
+ .debug_line    0x0000000000003d61      0x1f6 gcc/heap_1.o
+ .debug_line    0x0000000000003f57      0x38a gcc/BlockQ.o
+ .debug_line    0x00000000000042e1      0x2ce gcc/PollQ.o
+ .debug_line    0x00000000000045af      0x20e gcc/integer.o
+ .debug_line    0x00000000000047bd      0x3b0 gcc/semtest.o
+ .debug_line    0x0000000000004b6d      0x424 gcc/osram96x16.o
+ .debug_line    0x0000000000004f91      0x247 /usr/lib/gcc/arm-none-eabi/9.2.1/../../../arm-none-eabi/lib/thumb/nofp/libc.a(lib_a-memcpy-stub.o)
+ .debug_line    0x00000000000051d8      0x27b /usr/lib/gcc/arm-none-eabi/9.2.1/../../../arm-none-eabi/lib/thumb/nofp/libc.a(lib_a-memset.o)
+ .debug_line    0x0000000000005453      0x22c /usr/lib/gcc/arm-none-eabi/9.2.1/../../../arm-none-eabi/lib/thumb/nofp/libc.a(lib_a-utoa.o)
+ .debug_line    0x000000000000567f       0x7a /usr/lib/gcc/arm-none-eabi/9.2.1/thumb/nofp/libgcc.a(_udivsi3.o)
+ .debug_line    0x00000000000056f9       0x5d /usr/lib/gcc/arm-none-eabi/9.2.1/thumb/nofp/libgcc.a(_dvmd_tls.o)
 
-.debug_str      0x0000000000000000     0x27ac
+.debug_str      0x0000000000000000     0x27a5
  .debug_str     0x0000000000000000      0x157 gcc/startup.o
                                         0x176 (size before relaxing)
- .debug_str     0x0000000000000157      0x9af gcc/main.o
-                                        0xb33 (size before relaxing)
- .debug_str     0x0000000000000b06      0x131 gcc/list.o
+ .debug_str     0x0000000000000157      0x9a8 gcc/main.o
+                                        0xb2c (size before relaxing)
+ .debug_str     0x0000000000000aff      0x131 gcc/list.o
                                         0x6af (size before relaxing)
- .debug_str     0x0000000000000c37      0x55d gcc/queue.o
+ .debug_str     0x0000000000000c30      0x55d gcc/queue.o
                                         0xc5b (size before relaxing)
- .debug_str     0x0000000000001194      0x90d gcc/tasks.o
+ .debug_str     0x000000000000118d      0x90d gcc/tasks.o
                                        0x1348 (size before relaxing)
- .debug_str     0x0000000000001aa1       0xc1 gcc/port.o
+ .debug_str     0x0000000000001a9a       0xc1 gcc/port.o
                                         0x350 (size before relaxing)
- .debug_str     0x0000000000001b62       0x8b gcc/heap_1.o
+ .debug_str     0x0000000000001b5b       0x8b gcc/heap_1.o
                                         0x62c (size before relaxing)
- .debug_str     0x0000000000001bed      0x215 gcc/BlockQ.o
+ .debug_str     0x0000000000001be6      0x215 gcc/BlockQ.o
                                         0x836 (size before relaxing)
- .debug_str     0x0000000000001e02       0xbf gcc/PollQ.o
+ .debug_str     0x0000000000001dfb       0xbf gcc/PollQ.o
                                         0x753 (size before relaxing)
- .debug_str     0x0000000000001ec1       0x95 gcc/integer.o
+ .debug_str     0x0000000000001eba       0x95 gcc/integer.o
                                         0x678 (size before relaxing)
- .debug_str     0x0000000000001f56      0x158 gcc/semtest.o
+ .debug_str     0x0000000000001f4f      0x158 gcc/semtest.o
                                         0x7e3 (size before relaxing)
- .debug_str     0x00000000000020ae      0x172 gcc/osram96x16.o
+ .debug_str     0x00000000000020a7      0x172 gcc/osram96x16.o
                                         0x2bc (size before relaxing)
- .debug_str     0x0000000000002220      0x3c4 /usr/lib/gcc/arm-none-eabi/9.2.1/../../../arm-none-eabi/lib/thumb/nofp/libc.a(lib_a-memcpy-stub.o)
+ .debug_str     0x0000000000002219      0x3c4 /usr/lib/gcc/arm-none-eabi/9.2.1/../../../arm-none-eabi/lib/thumb/nofp/libc.a(lib_a-memcpy-stub.o)
                                         0x8f0 (size before relaxing)
- .debug_str     0x00000000000025e4       0x99 /usr/lib/gcc/arm-none-eabi/9.2.1/../../../arm-none-eabi/lib/thumb/nofp/libc.a(lib_a-memset.o)
+ .debug_str     0x00000000000025dd       0x99 /usr/lib/gcc/arm-none-eabi/9.2.1/../../../arm-none-eabi/lib/thumb/nofp/libc.a(lib_a-memset.o)
                                         0x8cb (size before relaxing)
- .debug_str     0x000000000000267d       0x94 /usr/lib/gcc/arm-none-eabi/9.2.1/../../../arm-none-eabi/lib/thumb/nofp/libc.a(lib_a-utoa.o)
+ .debug_str     0x0000000000002676       0x94 /usr/lib/gcc/arm-none-eabi/9.2.1/../../../arm-none-eabi/lib/thumb/nofp/libc.a(lib_a-utoa.o)
                                         0x5c4 (size before relaxing)
- .debug_str     0x0000000000002711       0x9b /usr/lib/gcc/arm-none-eabi/9.2.1/thumb/nofp/libgcc.a(_udivsi3.o)
- .debug_str     0x00000000000027ac       0x9b /usr/lib/gcc/arm-none-eabi/9.2.1/thumb/nofp/libgcc.a(_dvmd_tls.o)
+ .debug_str     0x000000000000270a       0x9b /usr/lib/gcc/arm-none-eabi/9.2.1/thumb/nofp/libgcc.a(_udivsi3.o)
+ .debug_str     0x00000000000027a5       0x9b /usr/lib/gcc/arm-none-eabi/9.2.1/thumb/nofp/libgcc.a(_dvmd_tls.o)
 
 .comment        0x0000000000000000      0x481
  .comment       0x0000000000000000       0x59 gcc/startup.o
