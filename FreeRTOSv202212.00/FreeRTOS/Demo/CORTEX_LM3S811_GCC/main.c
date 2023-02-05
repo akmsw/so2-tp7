@@ -120,6 +120,10 @@ static void vCalcularPromedio(void *pvParameters) {
 static void vDibujar(void *pvParameters) {
   int arregloPromedio[_COLS_DISPLAY_] = {};
 
+  for (int i = 0 ; i < _COLS_DISPLAY_; i++) {
+    arregloPromedio[i] = _MIN_TEMP_;
+  }
+
   int lectura;
 
   if (uxTaskGetStackHighWaterMark(NULL) < 1) {
@@ -245,35 +249,55 @@ int atoi(char *cadena) {
 }
 
 char* obtenerEquivalenteCaracter(int valor) {
-  switch (valor) {
-    case 15:
-    case 22:
-      return "@";
-    case 16:
-      return "`";
-    case 17:
-      return "P";
-    case 18:
-      return "H";
-    case 19:
-      return "D";
-    case 20:
-      return "B";
-    case 21:
-      return "A";
-    case 23:
-      return " ";
-    case 24:
-      return "";
-    case 25:
-      return "";
-    case 26:
-      return "";
-    case 27:
-    case 28:
-      return "";
-    case 29:
-    default:
-      return "";
+  if ((valor <= 15) || (valor == 22)) {
+    return "@";
+  }
+
+  if (valor == 16) {
+    return "`";
+  }
+
+  if (valor == 17) {
+    return "P";
+  }
+
+  if (valor == 18) {
+    return "H";
+  }
+
+  if (valor == 19) {
+    return "D";
+  }
+
+  if (valor == 20) {
+    return "B";
+  }
+
+  if (valor == 21) {
+    return "A";
+  }
+
+  if (valor == 23) {
+    return " ";
+  }
+
+  if (valor == 24) {
+    return "";
+  }
+
+  if (valor == 25) {
+    return "";
+  }
+
+  if (valor == 26) {
+    return "";
+  }
+
+  if ((valor == 27) || (valor == 28)) {
+    return "";
+  }
+
+  if (valor >= 29) {
+    return "";
   }
 }
