@@ -1,5 +1,3 @@
-#include <stdlib.h>
-
 #include "DriverLib.h"
 #include "FreeRTOS.h"
 #include "task.h"
@@ -23,6 +21,7 @@ void iniciarUART(void);
 int numeroAleatorio(void);
 int actualizarTamVentana(int);
 int calcularPromedio(int[], int, int);
+int atoi(char *);
 
 /* Colas */
 QueueHandle_t xColaSensor;
@@ -159,7 +158,7 @@ int actualizarTamVentana(int tamVentana) {
 
     nuevoTamVentana[i] = '\0';
 
-    tmp = strtol(nuevoTamVentana, NULL, 10);
+    tmp = atoi(nuevoTamVentana, NULL, 10);
 
     if (tmp > 1 && tmp < _MAX_TAM_VENTANA) {
       tamVentana = tmp;
@@ -167,6 +166,20 @@ int actualizarTamVentana(int tamVentana) {
   }
 
   return tamVentana;
+}
+
+int atoi(char *cadena) {
+  int numero = 0;
+
+  char *p = cadena;
+
+  while ((*p >= '0') && (*p <= '9')) {
+    numero = numero * 10 + (*p - '0');
+
+    p++;
+  }
+
+  return numero;
 }
 
 int numeroAleatorio(void) {
