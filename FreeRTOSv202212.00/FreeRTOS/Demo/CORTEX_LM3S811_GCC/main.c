@@ -11,12 +11,11 @@
 #define _MAX_TAM_VENTANA          (10)
 #define _MAX_TEMP_                (30)
 #define _MIN_TEMP_                (15)
-#define _COLS_DISPLAY_            (96)
+#define _COLS_DISPLAY_            (87)
 
 /* Tareas */
 static void vSensor(void *);
 static void vCalcularPromedio(void *);
-static void vGuardarPromedio(void *);
 static void vDibujar(void *);
 
 /* Funciones */
@@ -28,6 +27,7 @@ int numeroAleatorio(void);
 int actualizarTamVentana(int);
 int calcularPromedio(int[], int, int);
 int atoi(char *);
+char* obtenerEquivalenteCaracter(int);
 
 /* Colas */
 QueueHandle_t xColaSensor;
@@ -49,7 +49,6 @@ int main(void) {
   iniciarDisplay();
 	xTaskCreate(vSensor, "Sensor", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL);
   xTaskCreate(vCalcularPromedio, "Calcular promedio", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL);
-  xTaskCreate(vGuardarPromedio, "Guardar promedio", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL);
   xTaskCreate(vDibujar, "Dibujar", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL);
 	vTaskStartScheduler();
 
@@ -118,30 +117,32 @@ static void vCalcularPromedio(void *pvParameters) {
   }
 }
 
-static void vGuardarPromedio(void *pvParameters) {
-  int arregloPromedio[_MAX_N_] = {};
+static void vDibujar(void *pvParameters) {
+  int arregloPromedio[_COLS_DISPLAY_] = {};
 
-  int nuevoValor;
+  int lectura;
 
   if (uxTaskGetStackHighWaterMark(NULL) < 1) {
     while (true);
   }
 
   while (true) {
-    if (xQueueReceive(xColaPromedio, &nuevoValor, portMAX_DELAY) != pdTRUE) {
+    if (xQueueReceive(xColaPromedio, &lectura, portMAX_DELAY) != pdTRUE) {
       while (true);
     }
 
-    actualizarArregloCircular(arregloPromedio, _MAX_N_, nuevoValor);
+    actualizarArregloCircular(arregloPromedio, _COLS_DISPLAY_, lectura);
+    OSRAMClear();
+    dibujarEjes();
+
+    for (int i = 0; i < _COLS_DISPLAY_; i++) {
+      OSRAMImageDraw(obtenerEquivalenteCaracter(arregloPromedio[i]), (i + 11), (arregloPromedio[i] > 21 ? 1 : 0), 1, 1);
+    }
 
     if (uxTaskGetStackHighWaterMark(NULL) < 1) {
       while (true);
     }
   }
-}
-
-static void vDibujar(void *pvParameters) {
-  dibujarEjes();
 }
 
 void iniciarDisplay(void) {
@@ -241,4 +242,33 @@ int atoi(char *cadena) {
   }
 
   return numero;
+}
+
+char* obtenerEquivalenteCaracter(int valor) {
+  switch (valor) {
+    case 15:
+    case 22:
+      return "�";
+    case 16:
+    case 23:
+      return "@";
+    case 17:
+    case 24:
+      return " ";
+    case 18:
+    case 25:
+      return "";
+    case 19:
+    case 26:
+      return "";
+    case 20:
+    case 27:
+      return "";
+    case 21:
+    case 28:
+      return "";
+    case 29:
+    default:
+      return "";
+  }
 }
