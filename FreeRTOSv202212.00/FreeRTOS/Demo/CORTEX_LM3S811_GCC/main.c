@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "DriverLib.h"
 #include "FreeRTOS.h"
 #include "hw_include/hw_memmap.h"
@@ -5,7 +6,6 @@
 #include "hw_include/timer.h"
 #include "task.h"
 #include "queue.h"
-#include <stdlib.h>
 
 #define mainCHECK_DELAY				  ((TickType_t) 100 / portTICK_PERIOD_MS) // 10hz
 #define mainCHECK_TASK_PRIORITY (tskIDLE_PRIORITY + 3)

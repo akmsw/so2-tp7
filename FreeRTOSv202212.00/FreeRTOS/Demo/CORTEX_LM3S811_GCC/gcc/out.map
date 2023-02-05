@@ -90,7 +90,7 @@ SRAM             0x0000000020000000 0x0000000000002000 xrw
 Linker script and memory map
 
 
-.text           0x0000000000000000     0x3749
+.text           0x0000000000000000     0x3759
  *(.isr_vector)
  .isr_vector    0x0000000000000000       0xb0 gcc/startup.o
                 0x0000000000000000                g_pfnVectors
@@ -286,48 +286,48 @@ Linker script and memory map
  .text.__stub   0x0000000000003340        0x8 linker stubs
  *(.rodata*)
  .rodata.str1.4
-                0x0000000000003348       0xce gcc/main.o
- *fill*         0x0000000000003416        0x2 
+                0x0000000000003348       0xde gcc/main.o
+ *fill*         0x0000000000003426        0x2 
  .rodata.str1.4
-                0x0000000000003418        0x5 gcc/tasks.o
- *fill*         0x000000000000341d        0x3 
+                0x0000000000003428        0x5 gcc/tasks.o
+ *fill*         0x000000000000342d        0x3 
  .rodata.str1.4
-                0x0000000000003420       0x30 gcc/BlockQ.o
+                0x0000000000003430       0x30 gcc/BlockQ.o
  .rodata.str1.4
-                0x0000000000003450       0x10 gcc/PollQ.o
+                0x0000000000003460       0x10 gcc/PollQ.o
  .rodata.str1.4
-                0x0000000000003460        0x8 gcc/integer.o
+                0x0000000000003470        0x8 gcc/integer.o
  .rodata.str1.4
-                0x0000000000003468       0x20 gcc/semtest.o
- .rodata        0x0000000000003488      0x25d gcc/osram96x16.o
- *fill*         0x00000000000036e5        0x3 
- .rodata        0x00000000000036e8        0xc hw_include/libdriver.a(sysctl_pulrcgcregs_.o)
-                0x00000000000036e8                g_pulRCGCRegs
- .rodata        0x00000000000036f4       0x30 hw_include/libdriver.a(sysctl_pulxtals_.o)
-                0x00000000000036f4                g_pulXtals
+                0x0000000000003478       0x20 gcc/semtest.o
+ .rodata        0x0000000000003498      0x25d gcc/osram96x16.o
+ *fill*         0x00000000000036f5        0x3 
+ .rodata        0x00000000000036f8        0xc hw_include/libdriver.a(sysctl_pulrcgcregs_.o)
+                0x00000000000036f8                g_pulRCGCRegs
+ .rodata        0x0000000000003704       0x30 hw_include/libdriver.a(sysctl_pulxtals_.o)
+                0x0000000000003704                g_pulXtals
  .rodata.str1.4
-                0x0000000000003724       0x25 /usr/lib/gcc/arm-none-eabi/9.2.1/../../../arm-none-eabi/lib/thumb/nofp/libc.a(lib_a-utoa.o)
-                0x0000000000003749                _etext = .
+                0x0000000000003734       0x25 /usr/lib/gcc/arm-none-eabi/9.2.1/../../../arm-none-eabi/lib/thumb/nofp/libc.a(lib_a-utoa.o)
+                0x0000000000003759                _etext = .
 
-.glue_7         0x000000000000374c        0x0
- .glue_7        0x000000000000374c        0x0 linker stubs
+.glue_7         0x000000000000375c        0x0
+ .glue_7        0x000000000000375c        0x0 linker stubs
 
-.glue_7t        0x000000000000374c        0x0
- .glue_7t       0x000000000000374c        0x0 linker stubs
+.glue_7t        0x000000000000375c        0x0
+ .glue_7t       0x000000000000375c        0x0 linker stubs
 
-.vfp11_veneer   0x000000000000374c        0x0
- .vfp11_veneer  0x000000000000374c        0x0 linker stubs
+.vfp11_veneer   0x000000000000375c        0x0
+ .vfp11_veneer  0x000000000000375c        0x0 linker stubs
 
-.v4_bx          0x000000000000374c        0x0
- .v4_bx         0x000000000000374c        0x0 linker stubs
+.v4_bx          0x000000000000375c        0x0
+ .v4_bx         0x000000000000375c        0x0 linker stubs
 
-.iplt           0x000000000000374c        0x0
- .iplt          0x000000000000374c        0x0 gcc/startup.o
+.iplt           0x000000000000375c        0x0
+ .iplt          0x000000000000375c        0x0 gcc/startup.o
 
-.rel.dyn        0x000000000000374c        0x0
- .rel.iplt      0x000000000000374c        0x0 gcc/startup.o
+.rel.dyn        0x000000000000375c        0x0
+ .rel.iplt      0x000000000000375c        0x0 gcc/startup.o
 
-.data           0x0000000020000000       0xc8 load address 0x0000000000003749
+.data           0x0000000020000000       0xc8 load address 0x0000000000003759
                 0x0000000020000000                _data = .
  *(vtable)
  vtable         0x0000000020000000       0xb8 hw_include/libdriver.a(interrupt_vtable_.o)
@@ -383,10 +383,10 @@ Linker script and memory map
  .data          0x00000000200000c8        0x0 /usr/lib/gcc/arm-none-eabi/9.2.1/thumb/nofp/libgcc.a(_dvmd_tls.o)
                 0x00000000200000c8                _edata = .
 
-.igot.plt       0x00000000200000c8        0x0 load address 0x0000000000003814
+.igot.plt       0x00000000200000c8        0x0 load address 0x0000000000003824
  .igot.plt      0x00000000200000c8        0x0 gcc/startup.o
 
-.bss            0x00000000200000c8     0x15c8 load address 0x0000000000003814
+.bss            0x00000000200000c8     0x15c8 load address 0x0000000000003824
                 0x00000000200000c8                _bss = .
  *(.bss)
  .bss           0x00000000200000c8      0x100 gcc/startup.o
