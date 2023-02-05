@@ -9,6 +9,9 @@
 #define mainBAUD_RATE		          (19200)
 #define _MAX_N_                   (20)
 #define _MAX_TAM_VENTANA          (10)
+#define _MAX_TEMP_                (30)
+#define _MIN_TEMP_                (15)
+#define _COLS_DISPLAY_            (96)
 
 /* Tareas */
 static void vSensor(void *);
@@ -39,7 +42,7 @@ int main(void) {
   xColaPromedio = xQueueCreate(mainQUEUE_SIZE, sizeof(int));
 
   if ((xColaSensor == NULL) || (xColaPromedio == NULL)) {
-    for (;;);
+    while (true);
   }
 
   iniciarUART();
@@ -57,20 +60,28 @@ static void vSensor(void *pvParameters) {
   TickType_t xTiempoAnteriorTarea = xTaskGetTickCount();
 
   if (uxTaskGetStackHighWaterMark(NULL) < 1) {
-    for (;;);
+    while (true);
   }
 
-	for (;;)	{
+	while (true)	{
 		vTaskDelayUntil(&xTiempoAnteriorTarea, mainCHECK_DELAY);
 
-    numeroAleatorio() % 2 == 0 ? temperaturaActual++ : temperaturaActual--;
+    if (numeroAleatorio() % 2 == 0) {
+      if (temperaturaActual < _MAX_TEMP_) {
+        temperaturaActual++;
+      }
+    } else {
+      if (temperaturaActual > _MIN_TEMP_) {
+        temperaturaActual--;
+      }
+    }
 
     if (xQueueSend(xColaSensor, &temperaturaActual, portMAX_DELAY) != pdTRUE) {
-      for (;;);
+      while (true);
     }
 
     if (uxTaskGetStackHighWaterMark(NULL) < 1) {
-      for (;;);
+      while (true);
     }
 	}
 }
@@ -83,12 +94,12 @@ static void vCalcularPromedio(void *pvParameters) {
   int arregloTemperatura[_MAX_N_] = {};
 
   if (uxTaskGetStackHighWaterMark(NULL) < 1) {
-    for (;;);
+    while (true);
   }
 
-  for (;;) {
+  while (true) {
     if (xQueueReceive(xColaSensor, &valorCensado, portMAX_DELAY) != pdTRUE) {
-      for (;;);
+      while (true);
     }
 
     actualizarArregloCircular(arregloTemperatura, _MAX_N_, valorCensado);
@@ -98,11 +109,11 @@ static void vCalcularPromedio(void *pvParameters) {
     temperaturaPromedio = calcularPromedio(arregloTemperatura, _MAX_N_, tamVentana);
 
     if (xQueueSend(xColaPromedio, &temperaturaPromedio, portMAX_DELAY) != pdTRUE) {
-      for (;;);
+      while (true);
     }
 
     if (uxTaskGetStackHighWaterMark(NULL) < 1) {
-      for (;;);
+      while (true);
     }
   }
 }
@@ -113,18 +124,18 @@ static void vGuardarPromedio(void *pvParameters) {
   int nuevoValor;
 
   if (uxTaskGetStackHighWaterMark(NULL) < 1) {
-    for (;;);
+    while (true);
   }
 
-  for (;;) {
+  while (true) {
     if (xQueueReceive(xColaPromedio, &nuevoValor, portMAX_DELAY) != pdTRUE) {
-      for (;;);
+      while (true);
     }
 
     actualizarArregloCircular(arregloPromedio, _MAX_N_, nuevoValor);
 
     if (uxTaskGetStackHighWaterMark(NULL) < 1) {
-      for (;;);
+      while (true);
     }
   }
 }
@@ -143,7 +154,31 @@ void iniciarUART(void) {
 }
 
 void dibujarEjes(void) {
-  OSRAMStringDraw("HOLA MUNDO", 0, 0);
+  // 3
+  OSRAMImageDraw("", 1, 0, 1, 1);
+  OSRAMImageDraw("", 2, 0, 1, 1);
+  OSRAMImageDraw("", 3, 0, 1, 1);
+
+  // 0 superior
+  OSRAMImageDraw("", 5, 0, 1, 1);
+  OSRAMImageDraw("", 6, 0, 1, 1);
+  OSRAMImageDraw("", 7, 0, 1, 1);
+  OSRAMImageDraw("", 8, 0, 1, 1);
+
+  // 0 inferior
+  OSRAMImageDraw("8", 5, 1, 1, 1);
+  OSRAMImageDraw("D", 6, 1, 1, 1);
+  OSRAMImageDraw("D", 7, 1, 1, 1);
+  OSRAMImageDraw("8", 8, 1, 1, 1);
+
+  // Eje Y
+  OSRAMImageDraw("", 10, 0, 1, 1);
+  OSRAMImageDraw("", 10, 1, 1, 1);
+
+  // Eje X
+  for (int i = 11; i < _COLS_DISPLAY_; i++) {
+    OSRAMImageDraw("@", i, 1, 1, 1);
+  }
 }
 
 void actualizarArregloCircular(int arreglo[], int tamArreglo, int nuevoValor) {
@@ -195,7 +230,7 @@ int calcularPromedio(int arreglo[], int tamArreglo, int tamVentana) {
   int acumulador = 0;
 
   if (tamVentana > tamArreglo) {
-    for (;;);
+    while (true);
   }
 
   for (int i = 0; i < tamVentana; i++) {
