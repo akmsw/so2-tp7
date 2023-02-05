@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "DriverLib.h"
 #include "FreeRTOS.h"
 #include "task.h"
@@ -6,6 +8,7 @@
 #define mainCHECK_DELAY						((TickType_t) 100 / portTICK_PERIOD_MS) // 10hz
 #define mainCHECK_TASK_PRIORITY		(tskIDLE_PRIORITY + 3)
 #define mainQUEUE_SIZE				    (4)
+#define mainBAUD_RATE		          (19200)
 #define _MAX_N_                   (20)
 
 /* Tareas */
@@ -15,7 +18,9 @@ static void vGuardarPromedio(void *);
 
 /* Funciones */
 void actualizarArregloCircular(int[], int, int);
+void inicialHardware(void);
 int numeroAleatorio(void);
+int actualizarTamVentana(int);
 int calcularPromedio(int[], int, int);
 
 /* Colas */
@@ -25,7 +30,6 @@ QueueHandle_t xColaPromedio;
 /* Variables globales */
 static int semilla = 1;
 static int temperaturaActual = 24;
-static int temperaturaPromedio;
 
 int main(void) {
   xColaSensor = xQueueCreate(mainQUEUE_SIZE, sizeof(int));
@@ -67,6 +71,7 @@ static void vSensor(void *pvParameters) {
 
 static void vCalcularPromedio(void *pvParameters) {
   int valorCensado;
+  int temperaturaPromedio;
   int tamVentana = 10;
 
   int arregloTemperatura[_MAX_N_] = {};
@@ -81,6 +86,8 @@ static void vCalcularPromedio(void *pvParameters) {
     }
 
     actualizarArregloCircular(arregloTemperatura, _MAX_N_, valorCensado);
+
+    tamVentana = actualizarTamVentana(tamVentana);
 
     temperaturaPromedio = calcularPromedio(arregloTemperatura, _MAX_N_, tamVentana);
 
@@ -122,6 +129,37 @@ void actualizarArregloCircular(int arreglo[], int tamArreglo, int nuevoValor) {
   }
 
   arreglo[tamArreglo - 1] = nuevoValor;
+}
+
+void iniciarUART(void) {
+  SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
+  UARTConfigSet(UART0_BASE, mainBAUD_RATE, (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE | UART_CONFIG_PAR_NONE));
+}
+
+int actualizarTamVentana(int tamVentana) {
+  if (UARTCharsAvail(UART0_BASE)) {
+    int i = 0;
+
+    char lectura;
+
+    char nuevoTamVentana[2];
+
+    while ((lectura = (char) UARTCharNonBlockingGet(UART0_BASE)) != -1) {
+      nuevoTamVentana[i] = lectura;
+
+      if (i == 1) {
+        break;
+      }
+
+      i++;
+    }
+
+    nuevoTamVentana[i] = '\0';
+
+    tamVentana = atoi(nuevoTamVentana);
+  }
+
+  return tamVentana;
 }
 
 int numeroAleatorio(void) {
