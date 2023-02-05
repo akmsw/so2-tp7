@@ -173,7 +173,7 @@ int atoi(char *cadena) {
 
   char *c = cadena;
 
-  while (((*c >= '0') && (*c <= '9'))) {
+  while ((*c >= '0') && (*c <= '9')) {
     numero = numero * 10 + (*c++ - '0');
   }
 
