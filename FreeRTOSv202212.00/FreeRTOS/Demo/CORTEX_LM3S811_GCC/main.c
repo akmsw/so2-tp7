@@ -14,10 +14,13 @@
 static void vSensor(void *);
 static void vCalcularPromedio(void *);
 static void vGuardarPromedio(void *);
+static void vGraficar(void *);
 
 /* Funciones */
-void actualizarArregloCircular(int[], int, int);
+void iniciarDisplay(void);
 void iniciarUART(void);
+void dibujarEjes(void);
+void actualizarArregloCircular(int[], int, int);
 int numeroAleatorio(void);
 int actualizarTamVentana(int);
 int calcularPromedio(int[], int, int);
@@ -40,9 +43,11 @@ int main(void) {
   }
 
   iniciarUART();
+  iniciarDisplay();
 	xTaskCreate(vSensor, "Sensor", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL);
   xTaskCreate(vCalcularPromedio, "Calcular promedio", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL);
   xTaskCreate(vGuardarPromedio, "Guardar promedio", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL);
+  xTaskCreate(vGraficar, "Graficar", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL);
 	vTaskStartScheduler();
 
 	return 0;
@@ -124,17 +129,29 @@ static void vGuardarPromedio(void *pvParameters) {
   }
 }
 
+static void vGraficar(void *pvParameters) {
+  dibujarEjes();
+}
+
+void iniciarDisplay(void) {
+  OSRAMInit(false);
+}
+
+void iniciarUART(void) {
+  SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
+  UARTConfigSet(UART0_BASE, mainBAUD_RATE, (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE | UART_CONFIG_PAR_NONE));
+}
+
+void dibujarEjes(void) {
+  OSRAMStringDraw("HOLA MUNDO", 0, 0);
+}
+
 void actualizarArregloCircular(int arreglo[], int tamArreglo, int nuevoValor) {
   for(int i = 0; i < tamArreglo - 1; i++) {
     arreglo[i] = arreglo[i + 1];
   }
 
   arreglo[tamArreglo - 1] = nuevoValor;
-}
-
-void iniciarUART(void) {
-  SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
-  UARTConfigSet(UART0_BASE, mainBAUD_RATE, (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE | UART_CONFIG_PAR_NONE));
 }
 
 int actualizarTamVentana(int tamVentana) {
