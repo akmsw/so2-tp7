@@ -158,8 +158,9 @@ void dibujarEjes(void) {
   OSRAMImageDraw("", 1, 0, 3, 1);  // 3
   OSRAMImageDraw("", 5, 0, 4, 1); // 0
 
-  // 0 inferior
-  OSRAMImageDraw("8DD8", 5, 1, 4, 1);
+  // 15 inferior
+  OSRAMImageDraw("H|@", 1, 1, 3, 1);  // 1
+  OSRAMImageDraw("\\Tt", 5, 1, 3, 1); // 5
 
   // Eje Y
   OSRAMImageDraw("", 10, 0, 1, 1);
