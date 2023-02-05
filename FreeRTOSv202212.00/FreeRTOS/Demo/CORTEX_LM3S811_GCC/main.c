@@ -14,7 +14,7 @@
 static void vSensor(void *);
 static void vCalcularPromedio(void *);
 static void vGuardarPromedio(void *);
-static void vGraficar(void *);
+static void vDibujar(void *);
 
 /* Funciones */
 void iniciarDisplay(void);
@@ -47,7 +47,7 @@ int main(void) {
 	xTaskCreate(vSensor, "Sensor", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL);
   xTaskCreate(vCalcularPromedio, "Calcular promedio", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL);
   xTaskCreate(vGuardarPromedio, "Guardar promedio", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL);
-  xTaskCreate(vGraficar, "Graficar", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL);
+  xTaskCreate(vDibujar, "Dibujar", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL);
 	vTaskStartScheduler();
 
 	return 0;
@@ -129,7 +129,7 @@ static void vGuardarPromedio(void *pvParameters) {
   }
 }
 
-static void vGraficar(void *pvParameters) {
+static void vDibujar(void *pvParameters) {
   dibujarEjes();
 }
 
