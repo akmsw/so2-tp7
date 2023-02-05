@@ -136,7 +136,7 @@ static void vDibujar(void *pvParameters) {
     dibujarEjes();
 
     for (int i = 0; i < _COLS_DISPLAY_; i++) {
-      OSRAMImageDraw(obtenerEquivalenteCaracter(arregloPromedio[i]), (i + 11), (arregloPromedio[i] > 21 ? 1 : 0), 1, 1);
+      OSRAMImageDraw(obtenerEquivalenteCaracter(arregloPromedio[i]), (i + 11), (arregloPromedio[i] > 21 ? 0 : 1), 1, 1);
     }
 
     if (uxTaskGetStackHighWaterMark(NULL) < 1) {
