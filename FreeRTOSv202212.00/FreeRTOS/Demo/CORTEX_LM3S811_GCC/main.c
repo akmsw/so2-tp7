@@ -154,22 +154,14 @@ void iniciarUART(void) {
 }
 
 void dibujarEjes(void) {
-  // 3
-  OSRAMImageDraw("", 1, 0, 1, 1);
-  OSRAMImageDraw("", 2, 0, 1, 1);
-  OSRAMImageDraw("", 3, 0, 1, 1);
+  // 3 superior
+  OSRAMImageDraw("", 1, 0, 3, 1);
 
   // 0 superior
-  OSRAMImageDraw("", 5, 0, 1, 1);
-  OSRAMImageDraw("", 6, 0, 1, 1);
-  OSRAMImageDraw("", 7, 0, 1, 1);
-  OSRAMImageDraw("", 8, 0, 1, 1);
+  OSRAMImageDraw("", 5, 0, 4, 1);
 
   // 0 inferior
-  OSRAMImageDraw("8", 5, 1, 1, 1);
-  OSRAMImageDraw("D", 6, 1, 1, 1);
-  OSRAMImageDraw("D", 7, 1, 1, 1);
-  OSRAMImageDraw("8", 8, 1, 1, 1);
+  OSRAMImageDraw("8DD8", 5, 1, 4, 1);
 
   // Eje Y
   OSRAMImageDraw("", 10, 0, 1, 1);
