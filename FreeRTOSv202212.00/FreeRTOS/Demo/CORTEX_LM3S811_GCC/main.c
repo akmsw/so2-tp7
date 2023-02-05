@@ -168,7 +168,7 @@ void dibujarEjes(void) {
   OSRAMImageDraw("", 10, 1, 1, 1);
 
   // Eje X
-  for (int i = 11; i < _COLS_DISPLAY_; i++) {
+  for (int i = 11; i < _COLS_DISPLAY_ + 11; i++) {
     OSRAMImageDraw("@", i, 1, 1, 1);
   }
 }
