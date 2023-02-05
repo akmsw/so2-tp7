@@ -39,6 +39,7 @@ int main(void) {
     for (;;);
   }
 
+  iniciarUART();
 	xTaskCreate(vSensor, "Sensor", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL);
   xTaskCreate(vCalcularPromedio, "Calcular promedio", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL);
   xTaskCreate(vGuardarPromedio, "Guardar promedio", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL);
