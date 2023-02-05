@@ -248,23 +248,28 @@ char* obtenerEquivalenteCaracter(int valor) {
   switch (valor) {
     case 15:
     case 22:
-      return "�";
-    case 16:
-    case 23:
       return "@";
+    case 16:
+      return "`";
     case 17:
-    case 24:
-      return " ";
+      return "P";
     case 18:
-    case 25:
-      return "";
+      return "H";
     case 19:
-    case 26:
-      return "";
+      return "D";
     case 20:
-    case 27:
-      return "";
+      return "B";
     case 21:
+      return "A";
+    case 23:
+      return " ";
+    case 24:
+      return "";
+    case 25:
+      return "";
+    case 26:
+      return "";
+    case 27:
     case 28:
       return "";
     case 29:
