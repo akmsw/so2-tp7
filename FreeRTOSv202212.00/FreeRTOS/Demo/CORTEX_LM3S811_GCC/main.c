@@ -158,7 +158,7 @@ int actualizarTamVentana(int tamVentana) {
 
     nuevoTamVentana[i] = '\0';
 
-    tmp = atoi(nuevoTamVentana, NULL, 10);
+    tmp = atoi(nuevoTamVentana);
 
     if (tmp > 1 && tmp < _MAX_TAM_VENTANA) {
       tamVentana = tmp;
@@ -171,12 +171,10 @@ int actualizarTamVentana(int tamVentana) {
 int atoi(char *cadena) {
   int numero = 0;
 
-  char *p = cadena;
+  char *c = cadena;
 
-  while ((*p >= '0') && (*p <= '9')) {
-    numero = numero * 10 + (*p - '0');
-
-    p++;
+  while (((*c >= '0') && (*c <= '9'))) {
+    numero = numero * 10 + (*c++ - '0');
   }
 
   return numero;
