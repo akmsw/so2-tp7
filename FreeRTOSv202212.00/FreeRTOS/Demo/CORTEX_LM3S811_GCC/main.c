@@ -1,4 +1,3 @@
-#include <stdlib.h>
 #include "DriverLib.h"
 #include "FreeRTOS.h"
 #include "hw_include/hw_memmap.h"
@@ -38,6 +37,7 @@ int actualizarTamVentana(int);
 int calcularPromedio(int[], int, int);
 int convertirCadenaAEntero(char *);
 char* obtenerCaracterEquivalente(int);
+char* utoa(unsigned, char *, int);
 unsigned long obtenerValor(void);
 
 /* Colas */
@@ -255,19 +255,19 @@ void imprimirEstadisticas(void) {
 
         enviarCadenaUART0(pxTaskStatusArray[x].pcTaskName);
         enviarCadenaUART0("\t|");
-        utoa(pxTaskStatusArray[x].ulRunTimeCounter,counter, 10);
+        utoa(pxTaskStatusArray[x].ulRunTimeCounter, counter, 10);
         enviarCadenaUART0(counter);
         enviarCadenaUART0("\t|");
 
         if (ulStatsAsPercentage > 0UL) {
-          utoa(ulStatsAsPercentage,porcentaje, 10);
+          utoa(ulStatsAsPercentage, porcentaje, 10);
           enviarCadenaUART0(porcentaje);
         } else {
           enviarCadenaUART0("0");
         }
 
         enviarCadenaUART0("%\t|");
-        utoa(pxTaskStatusArray[x].usStackHighWaterMark,stack, 10);
+        utoa(pxTaskStatusArray[x].usStackHighWaterMark, stack, 10);
         enviarCadenaUART0(stack);
         enviarCadenaUART0(" Words\r\n");
       }
@@ -275,6 +275,43 @@ void imprimirEstadisticas(void) {
       enviarCadenaUART0("\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n");
     }
   }
+}
+
+char *utoa(unsigned valor, char *dest, int base) {
+  const char digits[] = "0123456789abcdefghijklmnopqrstuvwxyz";
+
+  int i;
+  int j;
+
+  unsigned resto;
+
+  char c;
+
+  if ((base < 2) || (base > 36)) {
+    dest[0] = '\0';
+    return NULL;
+  }
+
+  i = 0;
+
+  do {
+    resto = valor % base;
+
+    dest[i++] = digits[resto];
+
+    valor = valor / base;
+  } while (valor != 0);
+
+  dest[i] = '\0';
+
+  for (j = 0, i--; j < i; j++, i--) {
+    c = dest[j];
+
+    dest[j] = dest[i];
+    dest[i] = c;
+  }
+
+  return dest;
 }
 
 void enviarCadenaUART0(const char *cadena) {
