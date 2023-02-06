@@ -7,7 +7,7 @@
 #define mainCHECK_TASK_PRIORITY   (tskIDLE_PRIORITY + 3)
 #define mainQUEUE_SIZE				    4
 #define mainBAUD_RATE		          9600
-#define configDIBUJAR_STACK_SIZE  ((unsigned short) (127))
+#define configDIBUJAR_STACK_SIZE  ((unsigned short) (140))
 #define _MAX_N_                   20
 #define _MAX_TAM_VENTANA          10
 #define _MAX_TEMP_                30
@@ -40,10 +40,12 @@ char* utoa(unsigned, char *, int);
 /* Colas */
 QueueHandle_t colaSensor;
 QueueHandle_t colaPromedio;
+QueueHandle_t colaUART;
 
 /* Variables globales */
-static int semilla = 1;
-static int temperaturaActual = 24;
+static int semilla;
+static int temperaturaActual;
+static int tamVentana;
 
 unsigned long ulHighFrequencyTimerTicks;
 
@@ -52,10 +54,15 @@ TaskStatus_t *pxTaskStatusArray;
 int main(void) {
   colaSensor = xQueueCreate(mainQUEUE_SIZE, sizeof(int));
   colaPromedio = xQueueCreate(mainQUEUE_SIZE, sizeof(int));
+  colaUART = xQueueCreate(mainQUEUE_SIZE, sizeof(char *));
 
-  if ((colaSensor == NULL) || (colaPromedio == NULL)) {
+  if ((colaSensor == NULL) || (colaPromedio == NULL) || (colaUART == NULL)) {
     while (true);
   }
+
+  temperaturaActual = 24;
+  tamVentana = 10;
+  semilla = 1;
 
   iniciarUART();
   iniciarDisplay();
@@ -101,7 +108,6 @@ static void vSensor(void *pvParameters) {
 static void vCalcularPromedio(void *pvParameters) {
   int valorCensado;
   int temperaturaPromedio;
-  int tamVentana = 10;
 
   int arregloTemperatura[_MAX_N_] = {};
 
@@ -115,8 +121,6 @@ static void vCalcularPromedio(void *pvParameters) {
     }
 
     actualizarArregloCircular(arregloTemperatura, _MAX_N_, valorCensado);
-
-    tamVentana = actualizarTamVentana(tamVentana);
 
     temperaturaPromedio = calcularPromedio(arregloTemperatura, _MAX_N_, tamVentana);
 
@@ -189,6 +193,31 @@ void iniciarDisplay(void) {
 void iniciarUART(void) {
   SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
   UARTConfigSet(UART0_BASE, mainBAUD_RATE, (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE | UART_CONFIG_PAR_NONE));
+  UARTIntEnable(UART0_BASE, UART_INT_RX);
+	IntPrioritySet(INT_UART0, configKERNEL_INTERRUPT_PRIORITY);
+	IntEnable(INT_UART0);
+}
+
+void vUART_ISR(void) {
+	int rxNum;
+
+  unsigned long ulStatus;
+
+	char* rxChar;
+
+	ulStatus = UARTIntStatus(UART0_BASE, pdTRUE);
+
+	UARTIntClear(UART0_BASE, ulStatus);
+
+	if (ulStatus & UART_INT_RX) {
+		rxNum = UARTCharGet(UART0_BASE) - 48;
+
+		xQueueSend(colaUART, &rxNum, portMAX_DELAY);
+	}
+
+  if (xQueueReceive(colaUART, &tamVentana, 0) != pdTRUE) {
+    while (true);
+  }
 }
 
 void dibujarEjes(void) {
@@ -288,37 +317,6 @@ void actualizarArregloCircular(int arreglo[], int tamArreglo, int nuevoValor) {
   }
 
   arreglo[tamArreglo - 1] = nuevoValor;
-}
-
-int actualizarTamVentana(int tamVentana) {
-  if (UARTCharsAvail(UART0_BASE)) {
-    int i = 0;
-    int tmp;
-
-    char lectura;
-
-    char nuevoTamVentana[2];
-
-    while ((lectura = (char) UARTCharNonBlockingGet(UART0_BASE)) != -1) {
-      nuevoTamVentana[i] = lectura;
-
-      if (i == 1) {
-        break;
-      }
-
-      i++;
-    }
-
-    nuevoTamVentana[i] = '\0';
-
-    tmp = convertirCadenaAEntero(nuevoTamVentana);
-
-    if ((tmp > 1) && (tmp < _MAX_TAM_VENTANA)) {
-      tamVentana = tmp;
-    }
-  }
-
-  return tamVentana;
 }
 
 int numeroAleatorio(void) {
