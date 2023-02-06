@@ -30,7 +30,6 @@ void imprimirEstadisticas(void);
 void enviarCadenaUART0(const char *);
 void actualizarArregloCircular(int[], int, int);
 int numeroAleatorio(void);
-int actualizarTamVentana(int);
 int calcularPromedio(int[], int, int);
 int convertirCadenaAEntero(char *);
 unsigned long obtenerValor(void);
@@ -61,7 +60,7 @@ int main(void) {
   iniciarDisplay();
 	xTaskCreate(vSensor, "Sensor", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY + 1, NULL);
   xTaskCreate(vCalcularPromedio, "Prom.", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL);
-  xTaskCreate(vDibujar, "Dibujar", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY - 1, NULL);
+  xTaskCreate(vDibujar, "Dibujar", configDIBUJAR_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY - 1, NULL);
   xTaskCreate(vStats, "Stats", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY - 1, NULL);
 	vTaskStartScheduler();
 
