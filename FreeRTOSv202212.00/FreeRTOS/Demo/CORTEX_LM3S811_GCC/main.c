@@ -7,7 +7,6 @@
 #define mainCHECK_TASK_PRIORITY   (tskIDLE_PRIORITY + 3)
 #define mainQUEUE_SIZE				    4
 #define mainBAUD_RATE		          9600
-#define configDIBUJAR_STACK_SIZE  ((unsigned short) (140))
 #define _MAX_N_                   20
 #define _MAX_TAM_VENTANA          10
 #define _MAX_TEMP_                30
@@ -66,10 +65,10 @@ int main(void) {
 
   iniciarUART();
   iniciarDisplay();
-	xTaskCreate(vSensor, "Sensor", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY + 1, NULL);
-  xTaskCreate(vCalcularPromedio, "Prom.", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL);
+	xTaskCreate(vSensor, "Sensor", configSENSOR_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY + 1, NULL);
+  xTaskCreate(vCalcularPromedio, "Prom.", configAVG_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL);
   xTaskCreate(vDibujar, "Dibujar", configDIBUJAR_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY - 1, NULL);
-  xTaskCreate(vStats, "Stats", configMINIMAL_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY - 1, NULL);
+  xTaskCreate(vStats, "Stats", configSTATS_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY - 1, NULL);
 	vTaskStartScheduler();
 
 	return 0;

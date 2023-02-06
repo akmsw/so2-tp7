@@ -6,6 +6,10 @@
   #define configCPU_CLOCK_HZ			                  ((unsigned long) 20000000)
   #define configTICK_RATE_HZ			                  ((TickType_t) 1000)
   #define configMINIMAL_STACK_SIZE	                ((unsigned short) 70)
+  #define configSTATS_STACK_SIZE                    ((unsigned short) (60))
+  #define configSENSOR_STACK_SIZE                   ((unsigned short) (40))
+  #define configAVG_STACK_SIZE                      ((unsigned short) (60))
+  #define configDIBUJAR_STACK_SIZE                  ((unsigned short) (140))
   #define configTOTAL_HEAP_SIZE		                  ((size_t) (5000))
   #define configMAX_TASK_NAME_LEN		                10
   #define configUSE_16_BIT_TICKS		                0
