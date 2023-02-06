@@ -3,16 +3,17 @@
 #include "task.h"
 #include "queue.h"
 
-#define mainCHECK_DELAY				  ((TickType_t) 100 / portTICK_PERIOD_MS) // 10hz
-#define mainCHECK_TASK_PRIORITY (tskIDLE_PRIORITY + 3)
-#define mainQUEUE_SIZE				  4
-#define mainBAUD_RATE		        9600
-#define _MAX_N_                 20
-#define _MAX_TAM_VENTANA        10
-#define _MAX_TEMP_              30
-#define _MIN_TEMP_              15
-#define _COLS_DISPLAY_          87
-#define _STATS_DELAY_           ((TickType_t) 1000 / portTICK_PERIOD_MS)
+#define mainCHECK_DELAY				    ((TickType_t) 100 / portTICK_PERIOD_MS) // 10hz
+#define mainCHECK_TASK_PRIORITY   (tskIDLE_PRIORITY + 3)
+#define mainQUEUE_SIZE				    4
+#define mainBAUD_RATE		          9600
+#define configDIBUJAR_STACK_SIZE  ((unsigned short) (127))
+#define _MAX_N_                   20
+#define _MAX_TAM_VENTANA          10
+#define _MAX_TEMP_                30
+#define _MIN_TEMP_                15
+#define _COLS_DISPLAY_            87
+#define _STATS_DELAY_             ((TickType_t) 1000 / portTICK_PERIOD_MS)
 
 /* Tareas */
 static void vSensor(void *);
