@@ -160,10 +160,10 @@ static void vDibujar(void *pvParameters) {
     OSRAMClear();
     dibujarEjes();
 
-    for (int i = 0; i < _COLS_DISPLAY_; i++) {
+    for (int i = _COLS_DISPLAY_ - 1; i > 0; i--) {
       itoa(arregloPromedio[i], aux);
       OSRAMStringDraw(aux, 0, 1);
-      OSRAMImageDraw(obtenerCaracterEquivalente(arregloPromedio[i]), (i + 13), (arregloPromedio[i] > 21 ? 0 : 1), 1, 1);
+      OSRAMImageDraw(obtenerCaracterEquivalente(arregloPromedio[_COLS_DISPLAY_ - i]), (i + 13), (arregloPromedio[_COLS_DISPLAY_ - i] > 21 ? 0 : 1), 1, 1);
     }
 
     if (uxTaskGetStackHighWaterMark(NULL) < 1) {
@@ -335,11 +335,11 @@ void itoa(int n, char s[]) {
 }
 
 void actualizarArregloCircular(int arreglo[], int tamArreglo, int nuevoValor) {
-  for(int i = 0; i < tamArreglo - 1; i++) {
-    arreglo[i] = arreglo[i + 1];
+  for(int i = (tamArreglo - 1); i > 0; i--) {
+    arreglo[i] = arreglo[i - 1];
   }
 
-  arreglo[tamArreglo - 1] = nuevoValor;
+  arreglo[0] = nuevoValor;
 }
 
 int numeroAleatorio(void) {
@@ -356,7 +356,7 @@ int calcularPromedio(int arreglo[], int tamArreglo, int tamVentana) {
   }
 
   for (int i = 0; i < tamVentana; i++) {
-    acumulador += arreglo[(tamArreglo - 1) - i];
+    acumulador += arreglo[i];
   }
 
   return acumulador / tamVentana;
