@@ -38,8 +38,8 @@ char* obtenerCaracterEquivalente(int);
 char* utoa(unsigned, char *, int);
 
 /* Colas */
-QueueHandle_t xColaSensor;
-QueueHandle_t xColaPromedio;
+QueueHandle_t colaSensor;
+QueueHandle_t colaPromedio;
 
 /* Variables globales */
 static int semilla = 1;
@@ -50,10 +50,10 @@ unsigned long ulHighFrequencyTimerTicks;
 TaskStatus_t *pxTaskStatusArray;
 
 int main(void) {
-  xColaSensor = xQueueCreate(mainQUEUE_SIZE, sizeof(int));
-  xColaPromedio = xQueueCreate(mainQUEUE_SIZE, sizeof(int));
+  colaSensor = xQueueCreate(mainQUEUE_SIZE, sizeof(int));
+  colaPromedio = xQueueCreate(mainQUEUE_SIZE, sizeof(int));
 
-  if ((xColaSensor == NULL) || (xColaPromedio == NULL)) {
+  if ((colaSensor == NULL) || (colaPromedio == NULL)) {
     while (true);
   }
 
@@ -69,14 +69,14 @@ int main(void) {
 }
 
 static void vSensor(void *pvParameters) {
-  TickType_t xTiempoAnteriorTarea = xTaskGetTickCount();
+  TickType_t tiempoAnteriorTarea = xTaskGetTickCount();
 
   if (uxTaskGetStackHighWaterMark(NULL) < 1) {
     while (true);
   }
 
 	while (true)	{
-		vTaskDelayUntil(&xTiempoAnteriorTarea, mainCHECK_DELAY);
+		vTaskDelayUntil(&tiempoAnteriorTarea, mainCHECK_DELAY);
 
     if (numeroAleatorio() % 2 == 0) {
       if (temperaturaActual < _MAX_TEMP_) {
@@ -88,7 +88,7 @@ static void vSensor(void *pvParameters) {
       }
     }
 
-    if (xQueueSend(xColaSensor, &temperaturaActual, portMAX_DELAY) != pdTRUE) {
+    if (xQueueSend(colaSensor, &temperaturaActual, portMAX_DELAY) != pdTRUE) {
       while (true);
     }
 
@@ -110,7 +110,7 @@ static void vCalcularPromedio(void *pvParameters) {
   }
 
   while (true) {
-    if (xQueueReceive(xColaSensor, &valorCensado, portMAX_DELAY) != pdTRUE) {
+    if (xQueueReceive(colaSensor, &valorCensado, portMAX_DELAY) != pdTRUE) {
       while (true);
     }
 
@@ -120,7 +120,7 @@ static void vCalcularPromedio(void *pvParameters) {
 
     temperaturaPromedio = calcularPromedio(arregloTemperatura, _MAX_N_, tamVentana);
 
-    if (xQueueSend(xColaPromedio, &temperaturaPromedio, portMAX_DELAY) != pdTRUE) {
+    if (xQueueSend(colaPromedio, &temperaturaPromedio, portMAX_DELAY) != pdTRUE) {
       while (true);
     }
 
@@ -144,7 +144,7 @@ static void vDibujar(void *pvParameters) {
   }
 
   while (true) {
-    if (xQueueReceive(xColaPromedio, &lectura, portMAX_DELAY) != pdTRUE) {
+    if (xQueueReceive(colaPromedio, &lectura, portMAX_DELAY) != pdTRUE) {
       while (true);
     }
 
