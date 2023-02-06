@@ -23,7 +23,7 @@ Se desarrollaron las siguientes tareas:
 
 A continuación se detallará el desarrollo de cada tarea.
 
-### Simulador de sensor de temperatura
+### 🟢 Simulador de sensor de temperatura
 Esta primera tarea genera valores aleatorios en base a una semilla, y con ello modifica el valor de temperatura actual.\
 Para generar valores aleatorios se recurrió a una función extraída de un ejemplo para la placa SAMA5D3X. La misma está citada en la sección de [referencias](https://github.com/akmsw/so2-tp7#references). Con esta función se obtienen valores pseudo-aleatorios y el criterio de modificación de la temperatura fue:
 - Si el número obtenido es divisible por 2, se incrementa la temperatura
