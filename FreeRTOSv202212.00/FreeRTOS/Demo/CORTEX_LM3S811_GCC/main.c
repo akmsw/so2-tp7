@@ -280,8 +280,6 @@ void enviarCadenaUART0(const char *cadena) {
   }
 
   UARTCharPut(UART0_BASE, '\0');
-
-  return;
 }
 
 void actualizarArregloCircular(int arreglo[], int tamArreglo, int nuevoValor) {
