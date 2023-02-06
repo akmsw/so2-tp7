@@ -36,6 +36,8 @@ Primero se dibujan los ejes y los rangos a abarcar, luego, se grafica en el eje 
 ### 🟢 Recopilación de estadísticas
 Para esta tarea, al no poder utilizar varias ed las funciones de librerías estándares (por ejemplo, funciones como `utoa`), se optó por tomar la implementación de la función [vTaskGetRunTimeStats](https://www.freertos.org/a00021.html#vTaskGetRunTimeStats) y adaptarla para utilizar funciones equivalentes que no estén en esas librerías.\
 Estas estadísticas se recopilan en una estructura que almacena datos útiles sobre las tareas, como el porcentaje de CPU utilizado y la cantidad de stack libre que le queda. Estas estadísticas son enviadas por `serial0`.
+### 🟢 Utilización de UART0
+La recepción de datos por `UART0` se hizo mediante interrupciones. Se habilitó el handler `vUART_ISR` en el vector de interrupciones y se lo implementó en `main.c`.
 ## Running
 Para ejecutar el programa, se utiliza [QEMU](https://www.qemu.org/) como herramienta de emulación de hardware mediante el comando:\
 `qemu-system-arm -machine lm3s811evb -kernel gcc/RTOSDemo.axf`\
@@ -52,3 +54,5 @@ Finalmente, para terminar de linkear GDB con el programa y poder debuggear, debe
 *Recopilación de estadísticas de ejecución de las tareas*
 ## References
 - [Generador de números aleatorios](https://github.com/istarc/freertos/blob/master/FreeRTOS/Demo/CORTEX_A5_SAMA5D3x_Xplained_IAR/AtmelFiles/libboard_sama5d3x-ek/source/rand.c)
+- [itoa](https://gist.github.com/aaronryank/808d667c472af123e6ca08d0aacfcebc)
+- [utoa](https://github.com/bminor/newlib/blob/master/newlib/libc/stdlib/utoa.c)

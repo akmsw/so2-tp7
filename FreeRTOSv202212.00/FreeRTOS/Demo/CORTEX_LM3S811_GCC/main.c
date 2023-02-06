@@ -28,12 +28,15 @@ void configurarTimer(void);
 void Timer0IntHandler(void);
 void imprimirEstadisticas(void);
 void enviarCadenaUART0(const char *);
+void itoa(int, char[]);
 void actualizarArregloCircular(int[], int, int);
 int numeroAleatorio(void);
 int calcularPromedio(int[], int, int);
 int convertirCadenaAEntero(char *);
 unsigned long obtenerValor(void);
 char* obtenerCaracterEquivalente(int);
+char *reverse(char *);
+char* convertirTemperaturaString(int);
 char* utoa(unsigned, char *, int);
 
 /* Colas */
@@ -151,12 +154,16 @@ static void vDibujar(void *pvParameters) {
       while (true);
     }
 
+    char aux[2] = {};
+
     actualizarArregloCircular(arregloPromedio, _COLS_DISPLAY_, lectura);
     OSRAMClear();
     dibujarEjes();
 
     for (int i = 0; i < _COLS_DISPLAY_; i++) {
-      OSRAMImageDraw(obtenerCaracterEquivalente(arregloPromedio[i]), (i + 11), (arregloPromedio[i] > 21 ? 0 : 1), 1, 1);
+      itoa(arregloPromedio[i], aux);
+      OSRAMStringDraw(aux, 0, 1);
+      OSRAMImageDraw(obtenerCaracterEquivalente(arregloPromedio[i]), (i + 13), (arregloPromedio[i] > 21 ? 0 : 1), 1, 1);
     }
 
     if (uxTaskGetStackHighWaterMark(NULL) < 1) {
@@ -220,20 +227,12 @@ void vUART_ISR(void) {
 }
 
 void dibujarEjes(void) {
-  // 30 superior
-  OSRAMImageDraw("", 1, 0, 3, 1);  // 3
-  OSRAMImageDraw("", 5, 0, 4, 1); // 0
-
-  // 15 inferior
-  OSRAMImageDraw("H|@", 1, 1, 3, 1);  // 1
-  OSRAMImageDraw("\\Tt", 5, 1, 3, 1); // 5
-
   // Eje Y
-  OSRAMImageDraw("", 10, 0, 1, 1);
-  OSRAMImageDraw("", 10, 1, 1, 1);
+  OSRAMImageDraw("", 12, 0, 1, 1);
+  OSRAMImageDraw("", 12, 1, 1, 1);
 
   // Eje X
-  for (int i = 11; i < _COLS_DISPLAY_ + 11; i++) {
+  for (int i = 13; i < _COLS_DISPLAY_ + 11; i++) {
     OSRAMImageDraw("@", i, 1, 1, 1);
   }
 }
@@ -308,6 +307,31 @@ void enviarCadenaUART0(const char *cadena) {
   }
 
   UARTCharPut(UART0_BASE, '\0');
+}
+
+void itoa(int n, char s[]) {
+    int i;
+    int sign;
+
+    if ((sign = n) < 0) {
+      n = -n;
+    }
+
+    i = 0;
+
+    do {
+      s[i++] = n % 10 + '0';
+    } while ((n /= 10) > 0);
+
+    if (sign < 0) {
+      s[i++] = '-';
+    }
+
+    reverse(s);
+
+    s[i] = '\0';
+
+    return;
 }
 
 void actualizarArregloCircular(int arreglo[], int tamArreglo, int nuevoValor) {
@@ -406,6 +430,31 @@ char* obtenerCaracterEquivalente(int valor) {
   if (valor >= 29) {
     return "";
   }
+}
+
+char *reverse(char *str) {
+  char tmp;
+  char *src;
+  char *dst;
+
+  size_t len;
+
+  if (str != NULL) {
+    len = strlen (str);
+
+    if (len > 1) {
+      src = str;
+      dst = src + len - 1;
+
+      while (src < dst) {
+        tmp = *src;
+        *src++ = *dst;
+        *dst-- = tmp;
+      }
+    }
+  }
+
+  return str;
 }
 
 char *utoa(unsigned valor, char *dest, int base) {
