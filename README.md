@@ -43,12 +43,7 @@ En caso de querer debuggear, se deben agregar las flags `-s` y `-S` al comando a
 `gdb-multiarch gcc/RTOSDemo.axf`\
 Finalmente, para terminar de linkear GDB con el programa y poder debuggear, debemos ingresar el comando:\
 `target remote localhost:1234`
-## Testing
-
 ## Screenshots
-
-## Known issues
-
 ## References
 - [Generador de números aleatorios](https://github.com/istarc/freertos/blob/master/FreeRTOS/Demo/CORTEX_A5_SAMA5D3x_Xplained_IAR/AtmelFiles/libboard_sama5d3x-ek/source/rand.c)
 - [Delay until](https://freertos.org/vtaskdelayuntil.html)
