@@ -5,13 +5,13 @@
 
 #define mainCHECK_DELAY				  ((TickType_t) 100 / portTICK_PERIOD_MS) // 10hz
 #define mainCHECK_TASK_PRIORITY (tskIDLE_PRIORITY + 3)
-#define mainQUEUE_SIZE				   4
-#define mainBAUD_RATE		         19200
-#define _MAX_N_                  20
-#define _MAX_TAM_VENTANA         10
-#define _MAX_TEMP_               30
-#define _MIN_TEMP_               15
-#define _COLS_DISPLAY_           87
+#define mainQUEUE_SIZE				  4
+#define mainBAUD_RATE		        19200
+#define _MAX_N_                 20
+#define _MAX_TAM_VENTANA        10
+#define _MAX_TEMP_              30
+#define _MIN_TEMP_              15
+#define _COLS_DISPLAY_          87
 #define _STATS_DELAY_           ((TickType_t) 1000 / portTICK_PERIOD_MS)
 
 /* Tareas */
@@ -33,9 +33,9 @@ int numeroAleatorio(void);
 int actualizarTamVentana(int);
 int calcularPromedio(int[], int, int);
 int convertirCadenaAEntero(char *);
+unsigned long obtenerValor(void);
 char* obtenerCaracterEquivalente(int);
 char* utoa(unsigned, char *, int);
-unsigned long obtenerValor(void);
 
 /* Colas */
 QueueHandle_t xColaSensor;
@@ -274,43 +274,6 @@ void imprimirEstadisticas(void) {
   }
 }
 
-char *utoa(unsigned valor, char *dest, int base) {
-  const char digits[] = "0123456789abcdefghijklmnopqrstuvwxyz";
-
-  int i;
-  int j;
-
-  unsigned resto;
-
-  char c;
-
-  if ((base < 2) || (base > 36)) {
-    dest[0] = '\0';
-    return NULL;
-  }
-
-  i = 0;
-
-  do {
-    resto = valor % base;
-
-    dest[i++] = digits[resto];
-
-    valor = valor / base;
-  } while (valor != 0);
-
-  dest[i] = '\0';
-
-  for (j = 0, i--; j < i; j++, i--) {
-    c = dest[j];
-
-    dest[j] = dest[i];
-    dest[i] = c;
-  }
-
-  return dest;
-}
-
 void enviarCadenaUART0(const char *cadena) {
   while(*cadena != '\0') {
     UARTCharPut(UART0_BASE, *cadena++);
@@ -392,6 +355,10 @@ int convertirCadenaAEntero(char *cadena) {
   return numero;
 }
 
+unsigned long obtenerValor(void) {
+  return ulHighFrequencyTimerTicks;
+}
+
 char* obtenerCaracterEquivalente(int valor) {
   if ((valor <= 15) || (valor == 22)) {
     return "@";
@@ -446,6 +413,39 @@ char* obtenerCaracterEquivalente(int valor) {
   }
 }
 
-unsigned long obtenerValor(void) {
-  return ulHighFrequencyTimerTicks;
+char *utoa(unsigned valor, char *dest, int base) {
+  const char digits[] = "0123456789abcdefghijklmnopqrstuvwxyz";
+
+  int i;
+  int j;
+
+  unsigned resto;
+
+  char c;
+
+  if ((base < 2) || (base > 36)) {
+    dest[0] = '\0';
+    return NULL;
+  }
+
+  i = 0;
+
+  do {
+    resto = valor % base;
+
+    dest[i++] = digits[resto];
+
+    valor = valor / base;
+  } while (valor != 0);
+
+  dest[i] = '\0';
+
+  for (j = 0, i--; j < i; j++, i--) {
+    c = dest[j];
+
+    dest[j] = dest[i];
+    dest[i] = c;
+  }
+
+  return dest;
 }
