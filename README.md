@@ -36,6 +36,11 @@ Un requisito fue que esta tarea se ejecute con una frecuencia de 10[Hz]. Para es
 Finalmente, haciendo uso del [ejemplo de la documentación de FreeRTOS para ejecutar tareas cada cierto tiempo](https://freertos.org/vtaskdelayuntil.html), se hizo uso de la función `vTaskDelayUntil`.
 
 La diferencia principal entre `vTaskDelay` y `vTaskDelayUntil` es que en la primera se indica cuánto tiempo debe pasar desde haber llamado a `vTaskDelay` para "despertar" a la tarea (delay relativo); por otro lado, en la segunda se indica el delay para "despertar" a la tarea de forma absoluta desde la última vez que la tarea se "despertó".
+
+### 🟢 Calculador de promedio
+Esta tarea toma los valores generados por la tarea anterior guardados en la cola `colaSensor` y los almacena en un arreglo circular. Luego, en base al tamaño de la ventana que se esté usando, efectúa el cálculo del promedio.\
+Cada valor promedio generado se almacena en una cola llamada `colaPromedio` que es usada más adelante.
+
 ## Running
 
 ## Testing
