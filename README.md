@@ -15,7 +15,27 @@ Finalmente, para terminar de linkear GDB con el programa y poder debuggear, debe
 `target remote localhost:1234`
 
 ## Development
+Se desarrollaron las siguientes tareas:
+- Simulación de un sensor de temperatura
+- Cálculo del promedio de la temperatura mediante un filtro de ventana deslizante
+- Gráfico en el tiempo de los valores promediados
+- Recopilación de estadísticas de ejecución de las tareas
 
+A continuación se detallará el desarrollo de cada tarea.
+
+### Simulador de sensor de temperatura
+Esta primera tarea genera valores aleatorios en base a una semilla, y con ello modifica el valor de temperatura actual.\
+Para generar valores aleatorios se recurrió a una función extraída de un ejemplo para la placa SAMA5D3X. La misma está citada en la sección de [referencias](https://github.com/akmsw/so2-tp7#references). Con esta función se obtienen valores pseudo-aleatorios y el criterio de modificación de la temperatura fue:
+- Si el número obtenido es divisible por 2, se incrementa la temperatura
+- Caso contrario, se decrementa la temperatura
+
+Para almacenar los valores generados, se creó una cola llamada `colaSensor`.\
+Un requisito fue que esta tarea se ejecute con una frecuencia de 10[Hz]. Para esto, se definió un delay `mainCHECK_DELAY` haciendo uso de `portTICK_PERIOD_MS` para pasar el equivalente en milisegundos a delay en ticks. De esta manera, nos queda el delay definido de la forma:\
+`#define mainCHECK_DELAY ((TickType_t) 100 / portTICK_PERIOD_MS)`
+
+Finalmente, haciendo uso del [ejemplo de la documentación de FreeRTOS para ejecutar tareas cada cierto tiempo](https://freertos.org/vtaskdelayuntil.html), se hizo uso de la función `vTaskDelayUntil`.
+
+La diferencia principal entre `vTaskDelay` y `vTaskDelayUntil` es que en la primera se indica cuánto tiempo debe pasar desde haber llamado a `vTaskDelay` para "despertar" a la tarea (delay relativo); por otro lado, en la segunda se indica el delay para "despertar" a la tarea de forma absoluta desde la última vez que la tarea se "despertó".
 ## Running
 
 ## Testing
