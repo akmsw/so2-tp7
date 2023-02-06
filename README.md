@@ -33,6 +33,9 @@ Cada valor promedio generado se almacena en una cola llamada `colaPromedio` que 
 Para la tarea que traza el gráfico de los promedios de las mediciones en el tiempo, se hizo uso de la función `OSRAMImageDraw`, que recibe un arreglo de caracteres en formato UTF-8 y los grafica en el display.\
 La disposición del display es de 16 filas por 96 columnas, dividido en dos renglones de 8x96.\
 Primero se dibujan los ejes y los rangos a abarcar, luego, se grafica en el eje X las mediciones almacenadas del arreglo circular. Para esto,se hizo un mapeo de cada temperatura del rango establecido con los píxeles a pintar en la gráfica representados como números binaros de 8 bits y se obtuvieron sus caracteres equivalentes en formato UTF-8 mediante el siguiente [conversor online](https://www.rapidtables.com/convert/number/binary-to-string.html).
+### 🟢 Recopilación de estadísticas
+Para esta tarea, al no poder utilizar varias ed las funciones de librerías estándares (por ejemplo, funciones como `utoa`), se optó por tomar la implementación de la función [vTaskGetRunTimeStats](https://www.freertos.org/a00021.html#vTaskGetRunTimeStats) y adaptarla para utilizar funciones equivalentes que no estén en esas librerías.\
+Estas estadísticas se recopilan en una estructura que almacena datos útiles sobre las tareas, como el porcentaje de CPU utilizado y la cantidad de stack libre que le queda.
 ## Running
 Para ejecutar el programa, se utiliza [QEMU](https://www.qemu.org/) como herramienta de emulación de hardware mediante el comando:\
 `qemu-system-arm -machine lm3s811evb -kernel gcc/RTOSDemo.axf`\
