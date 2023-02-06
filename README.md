@@ -16,7 +16,7 @@ A continuación se detallará el desarrollo de cada tarea.
 
 ### 🟢 Simulador de sensor de temperatura
 Esta primera tarea genera valores aleatorios en base a una semilla, y con ello modifica el valor de temperatura actual.\
-Para generar valores aleatorios se recurrió a una función extraída de un ejemplo para la placa **SAMA5D3X**. La misma está citada en la sección de [referencias](https://github.com/akmsw/so2-tp7#references). Con esta función se obtienen valores pseudo-aleatorios y el criterio de modificación de la temperatura fue:
+Para generar valores aleatorios se implementó un algoritmo [PRNG](https://en.wikipedia.org/wiki/Pseudorandom_number_generator) definido por POSIX. El mismo está citado en la sección de [referencias](https://github.com/akmsw/so2-tp7#references). Con esta función se obtienen valores pseudo-aleatorios y el criterio de modificación de la temperatura fue:
 - Si el número obtenido es divisible por 2, se incrementa la temperatura
 - Caso contrario, se decrementa la temperatura
 
@@ -53,6 +53,6 @@ Finalmente, para terminar de linkear GDB con el programa y poder debuggear, debe
 ![ss3](./res/img/ss3.png)\
 *Recopilación de estadísticas de ejecución de las tareas*
 ## References
-- [Generador de números aleatorios](https://github.com/istarc/freertos/blob/master/FreeRTOS/Demo/CORTEX_A5_SAMA5D3x_Xplained_IAR/AtmelFiles/libboard_sama5d3x-ek/source/rand.c)
+- [Generador de números aleatorios](https://pubs.opengroup.org/onlinepubs/9699919799/functions/rand.html)
 - [itoa](https://gist.github.com/aaronryank/808d667c472af123e6ca08d0aacfcebc)
 - [utoa](https://github.com/bminor/newlib/blob/master/newlib/libc/stdlib/utoa.c)
