@@ -97,16 +97,16 @@ Linker script and memory map
                 0x00000000000001c0                iniciarUART
                 0x00000000000001e0                dibujarEjes
                 0x0000000000000270                configurarTimer0
-                0x00000000000002bc                utoa
-                0x000000000000034c                enviarCadenaUART0
-                0x000000000000037c                imprimirEstadisticas
-                0x00000000000004d8                actualizarArregloCircular
-                0x000000000000050c                actualizarTamVentana
-                0x00000000000005f8                numeroAleatorio
-                0x0000000000000620                calcularPromedio
-                0x0000000000000650                convertirCadenaAEntero
-                0x000000000000067c                obtenerCaracterEquivalente
-                0x00000000000007b8                obtenerValor
+                0x00000000000002bc                enviarCadenaUART0
+                0x00000000000002ec                actualizarArregloCircular
+                0x0000000000000320                actualizarTamVentana
+                0x000000000000040c                numeroAleatorio
+                0x0000000000000434                calcularPromedio
+                0x0000000000000464                convertirCadenaAEntero
+                0x0000000000000490                obtenerValor
+                0x000000000000049c                obtenerCaracterEquivalente
+                0x00000000000005d8                utoa
+                0x0000000000000668                imprimirEstadisticas
  .text.startup  0x00000000000007c4       0xb0 gcc/main.o
                 0x00000000000007c4                main
  .text          0x0000000000000874       0x90 gcc/list.o
@@ -270,8 +270,8 @@ Linker script and memory map
                 0x0000000000003170                memset
  *(.rodata*)
  .rodata.str1.4
-                0x0000000000003220       0xf6 gcc/main.o
- *fill*         0x0000000000003316        0x2 
+                0x0000000000003220       0xf5 gcc/main.o
+ *fill*         0x0000000000003315        0x3 
  .rodata.str1.4
                 0x0000000000003318        0x5 gcc/tasks.o
  *fill*         0x000000000000331d        0x3 
@@ -517,21 +517,21 @@ LOAD linker stubs
  .debug_aranges
                 0x00000000000001a8       0x20 /usr/lib/gcc/arm-none-eabi/9.2.1/../../../arm-none-eabi/lib/thumb/nofp/libc.a(lib_a-memset.o)
 
-.debug_line     0x0000000000000000     0x5525
+.debug_line     0x0000000000000000     0x5523
  .debug_line    0x0000000000000000       0xe4 gcc/startup.o
- .debug_line    0x00000000000000e4      0xcc3 gcc/main.o
- .debug_line    0x0000000000000da7      0x2e0 gcc/list.o
- .debug_line    0x0000000000001087     0x109d gcc/queue.o
- .debug_line    0x0000000000002124     0x19df gcc/tasks.o
- .debug_line    0x0000000000003b03      0x330 gcc/port.o
- .debug_line    0x0000000000003e33      0x1f6 gcc/heap_1.o
- .debug_line    0x0000000000004029      0x38a gcc/BlockQ.o
- .debug_line    0x00000000000043b3      0x2ce gcc/PollQ.o
- .debug_line    0x0000000000004681      0x20e gcc/integer.o
- .debug_line    0x000000000000488f      0x3b0 gcc/semtest.o
- .debug_line    0x0000000000004c3f      0x424 gcc/osram96x16.o
- .debug_line    0x0000000000005063      0x247 /usr/lib/gcc/arm-none-eabi/9.2.1/../../../arm-none-eabi/lib/thumb/nofp/libc.a(lib_a-memcpy-stub.o)
- .debug_line    0x00000000000052aa      0x27b /usr/lib/gcc/arm-none-eabi/9.2.1/../../../arm-none-eabi/lib/thumb/nofp/libc.a(lib_a-memset.o)
+ .debug_line    0x00000000000000e4      0xcc1 gcc/main.o
+ .debug_line    0x0000000000000da5      0x2e0 gcc/list.o
+ .debug_line    0x0000000000001085     0x109d gcc/queue.o
+ .debug_line    0x0000000000002122     0x19df gcc/tasks.o
+ .debug_line    0x0000000000003b01      0x330 gcc/port.o
+ .debug_line    0x0000000000003e31      0x1f6 gcc/heap_1.o
+ .debug_line    0x0000000000004027      0x38a gcc/BlockQ.o
+ .debug_line    0x00000000000043b1      0x2ce gcc/PollQ.o
+ .debug_line    0x000000000000467f      0x20e gcc/integer.o
+ .debug_line    0x000000000000488d      0x3b0 gcc/semtest.o
+ .debug_line    0x0000000000004c3d      0x424 gcc/osram96x16.o
+ .debug_line    0x0000000000005061      0x247 /usr/lib/gcc/arm-none-eabi/9.2.1/../../../arm-none-eabi/lib/thumb/nofp/libc.a(lib_a-memcpy-stub.o)
+ .debug_line    0x00000000000052a8      0x27b /usr/lib/gcc/arm-none-eabi/9.2.1/../../../arm-none-eabi/lib/thumb/nofp/libc.a(lib_a-memset.o)
 
 .debug_str      0x0000000000000000     0x2686
  .debug_str     0x0000000000000000      0x157 gcc/startup.o

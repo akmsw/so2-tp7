@@ -6,7 +6,7 @@
 #define mainCHECK_DELAY				  ((TickType_t) 100 / portTICK_PERIOD_MS) // 10hz
 #define mainCHECK_TASK_PRIORITY (tskIDLE_PRIORITY + 3)
 #define mainQUEUE_SIZE				  4
-#define mainBAUD_RATE		        19200
+#define mainBAUD_RATE		        9600
 #define _MAX_N_                 20
 #define _MAX_TAM_VENTANA        10
 #define _MAX_TEMP_              30
@@ -414,7 +414,7 @@ char* obtenerCaracterEquivalente(int valor) {
 }
 
 char *utoa(unsigned valor, char *dest, int base) {
-  const char digits[] = "0123456789abcdefghijklmnopqrstuvwxyz";
+  const char digitos[] = "0123456789abcdefghijklmnopqrstuvwxyz";
 
   int i;
   int j;
@@ -433,7 +433,7 @@ char *utoa(unsigned valor, char *dest, int base) {
   do {
     resto = valor % base;
 
-    dest[i++] = digits[resto];
+    dest[i++] = digitos[resto];
 
     valor = valor / base;
   } while (valor != 0);
