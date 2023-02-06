@@ -313,7 +313,7 @@ int actualizarTamVentana(int tamVentana) {
 
     tmp = convertirCadenaAEntero(nuevoTamVentana);
 
-    if (tmp > 1 && tmp < _MAX_TAM_VENTANA) {
+    if ((tmp > 1) && (tmp < _MAX_TAM_VENTANA)) {
       tamVentana = tmp;
     }
   }
