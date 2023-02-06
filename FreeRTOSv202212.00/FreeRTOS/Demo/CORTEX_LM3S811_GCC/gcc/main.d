@@ -15,7 +15,6 @@ gcc/main.o: main.c hw_include/DriverLib.h hw_include/DriverLib.h \
  ../../Source/include/projdefs.h ../../Source/include/portable.h \
  ../../Source/include/deprecated_definitions.h \
  ../../Source/include/../../Source/portable/GCC/ARM_CM3/portmacro.h \
- ../../Source/include/mpu_wrappers.h hw_include/hw_memmap.h \
- hw_include/hw_timer.h hw_include/timer.h ../../Source/include/task.h \
+ ../../Source/include/mpu_wrappers.h ../../Source/include/task.h \
  ../../Source/include/list.h ../../Source/include/queue.h \
  ../../Source/include/task.h

@@ -1,8 +1,5 @@
 #include "DriverLib.h"
 #include "FreeRTOS.h"
-#include "hw_include/hw_memmap.h"
-#include "hw_include/hw_timer.h"
-#include "hw_include/timer.h"
 #include "task.h"
 #include "queue.h"
 
