@@ -16,7 +16,7 @@ A continuación se detallará el desarrollo de cada tarea.
 
 ### 🟢 Simulador de sensor de temperatura
 Esta primera tarea genera valores aleatorios en base a una semilla, y con ello modifica el valor de temperatura actual.\
-Para generar valores aleatorios se recurrió a una función extraída de un ejemplo para la placa SAMA5D3X. La misma está citada en la sección de [referencias](https://github.com/akmsw/so2-tp7#references). Con esta función se obtienen valores pseudo-aleatorios y el criterio de modificación de la temperatura fue:
+Para generar valores aleatorios se recurrió a una función extraída de un ejemplo para la placa **SAMA5D3X**. La misma está citada en la sección de [referencias](https://github.com/akmsw/so2-tp7#references). Con esta función se obtienen valores pseudo-aleatorios y el criterio de modificación de la temperatura fue:
 - Si el número obtenido es divisible por 2, se incrementa la temperatura
 - Caso contrario, se decrementa la temperatura
 
@@ -44,7 +44,11 @@ En caso de querer debuggear, se deben agregar las flags `-s` y `-S` al comando a
 Finalmente, para terminar de linkear GDB con el programa y poder debuggear, debemos ingresar el comando:\
 `target remote localhost:1234`
 ## Screenshots
+![ss1](./res/img/ss1.png)\
+*Gráfico del promedio en el tiempo con una ventana de 10 muestras*\
+![ss2](./res/img/ss2.png)\
+*Gráfico del promedio en el tiempo con una ventana de 2 muestras*\
+![ss3](./res/img/ss3.png)\
+*Recopilación de estadísticas de ejecución de las tareas*
 ## References
 - [Generador de números aleatorios](https://github.com/istarc/freertos/blob/master/FreeRTOS/Demo/CORTEX_A5_SAMA5D3x_Xplained_IAR/AtmelFiles/libboard_sama5d3x-ek/source/rand.c)
-- [Delay until](https://freertos.org/vtaskdelayuntil.html)
-- [Conversor binario a UTF-8](https://www.rapidtables.com/convert/number/binary-to-string.html)
