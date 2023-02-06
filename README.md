@@ -20,21 +20,21 @@ Para generar valores aleatorios se recurrió a una función extraída de un ejem
 - Si el número obtenido es divisible por 2, se incrementa la temperatura
 - Caso contrario, se decrementa la temperatura
 
-Se trabajó con un rango limitado de 15[°C] a 30[°C].
+Se trabajó con un rango limitado de 15°C a 30°C.\
 Para almacenar los valores generados, se creó una cola llamada `colaSensor`.\
-Un requisito fue que esta tarea se ejecute con una frecuencia de 10[Hz]. Para esto, se definió un delay `mainCHECK_DELAY` haciendo uso de `portTICK_PERIOD_MS` para pasar el equivalente en milisegundos a delay en ticks. De esta manera, nos queda el delay definido de la forma:\
+Un requisito fue que esta tarea se ejecute con una frecuencia de 10Hz. Para esto, se definió un delay `mainCHECK_DELAY` haciendo uso de `portTICK_PERIOD_MS` para pasar el equivalente en milisegundos a delay en ticks. De esta manera, nos queda el delay definido de la forma:\
 `#define mainCHECK_DELAY ((TickType_t) 100 / portTICK_PERIOD_MS)`\
 Finalmente, haciendo uso del [ejemplo de la documentación de FreeRTOS para ejecutar tareas cada cierto tiempo](https://freertos.org/vtaskdelayuntil.html), se hizo uso de la función `vTaskDelayUntil`.\
-La diferencia principal entre `vTaskDelay` y `vTaskDelayUntil` es que en la primera se indica cuánto tiempo debe pasar desde haber llamado a `vTaskDelay` para "despertar" a la tarea (delay relativo); por otro lado, en la segunda se indica el delay para "despertar" a la tarea de forma absoluta desde la última vez que la tarea se "despertó".
+La diferencia principal entre `vTaskDelay` y `vTaskDelayUntil` es que en la primera se indica cuánto tiempo debe pasar desde haber llamado a `vTaskDelay` para "despertar" a la tarea (delay relativo); por otro lado, en la segunda se indica de manera absoluta el delay para "despertar" a la tarea desde la última vez que la tarea se "despertó".
 ### 🟢 Calculador de promedio
-Esta tarea toma los valores generados por la tarea anterior guardados en la cola `colaSensor` y los almacena en un arreglo circular. Luego, en base al tamaño de la ventana que se esté usando, que puede variar si se ingresa un valor de 2 a 9 por UART, efectúa el cálculo del promedio.\
+Esta tarea toma los valores generados por la tarea anterior guardados en la cola `colaSensor` y los almacena en un arreglo circular. Luego, en base al tamaño de la ventana que se esté usando, que puede variar si se ingresa un valor de 2 a 9 por UART, efectúa el cálculo del promedio. El tamaño de la ventana por defecto comienza en 10.\
 Cada valor promedio generado se almacena en una cola llamada `colaPromedio` que es usada más adelante.
 ### 🟢 Gráfico
-Para la tarea que traza el gráfico de los promedios de las mediciones en el tiempo, se hizo uso de la función `OSRAMImageDraw`, que recibe un arreglo de caracteres en formato UTF-8 y los grafica en el display.\
+Para la tarea que traza el gráfico de los promedios de las mediciones en el tiempo, se hizo uso de la función `OSRAMImageDraw`, que recibe un arreglo de caracteres en formato ASCII y los grafica en el display.\
 La disposición del display es de 16 filas por 96 columnas, dividido en dos renglones de 8x96.\
-Primero se dibujan los ejes y los rangos a abarcar, luego, se grafica en el eje X las mediciones almacenadas del arreglo circular. Para esto,se hizo un mapeo de cada temperatura del rango establecido con los píxeles a pintar en la gráfica representados como números binaros de 8 bits y se obtuvieron sus caracteres equivalentes en formato UTF-8 mediante el siguiente [conversor online](https://www.rapidtables.com/convert/number/binary-to-string.html).
+Primero se dibujan los ejes, luego, se grafica en el eje X las mediciones almacenadas del arreglo circular junto con el valor numérico del promedio que se está graficando. Para esto, se hizo un mapeo de cada temperatura del rango establecido con los píxeles a pintar en la gráfica representados como números binaros de 8 bits y se obtuvieron sus caracteres equivalentes en formato ASCII mediante el siguiente [conversor online](https://www.rapidtables.com/convert/number/binary-to-string.html).
 ### 🟢 Recopilación de estadísticas
-Para esta tarea, al no poder utilizar varias ed las funciones de librerías estándares (por ejemplo, funciones como `utoa`), se optó por tomar la implementación de la función [vTaskGetRunTimeStats](https://www.freertos.org/a00021.html#vTaskGetRunTimeStats) y adaptarla para utilizar funciones equivalentes que no estén en esas librerías.\
+Para esta tarea, al no poder utilizar varias de las funciones de librerías estándares (por ejemplo, funciones como `utoa`), se optó por tomar la implementación de la función [vTaskGetRunTimeStats](https://www.freertos.org/a00021.html#vTaskGetRunTimeStats) y adaptarla para utilizar funciones equivalentes que no estén en esas librerías.\
 Estas estadísticas se recopilan en una estructura que almacena datos útiles sobre las tareas, como el porcentaje de CPU utilizado y la cantidad de stack libre que le queda. Estas estadísticas son enviadas por `serial0`.
 ### 🟢 Utilización de UART0
 La recepción de datos por `UART0` se hizo mediante interrupciones. Se habilitó el handler `vUART_ISR` en el vector de interrupciones y se lo implementó en `main.c`.
