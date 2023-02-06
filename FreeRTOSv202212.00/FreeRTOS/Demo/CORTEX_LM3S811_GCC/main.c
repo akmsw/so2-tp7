@@ -35,7 +35,7 @@ int calcularPromedio(int[], int, int);
 int convertirCadenaAEntero(char *);
 unsigned long obtenerValor(void);
 char* obtenerCaracterEquivalente(int);
-char *reverse(char *);
+char* reverse(char *);
 char* convertirTemperaturaString(int);
 char* utoa(unsigned, char *, int);
 
